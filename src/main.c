@@ -264,8 +264,6 @@ void step_physics(Game* game, float dt) {
     if (!game->in_reset_animation) game->time += dt;
 
     // NOTE: both paddles use paddle 1's height. If paddles have differing heights, this needs to be updated
-    Paddle* paddle1 = &(game->paddles[0]);
-    Paddle* paddle2 = &(game->paddles[1]);
     Ball* ball = &(game->ball);
 
     float screen_bottom = (float) SCREEN_HEIGHT; 
@@ -295,8 +293,8 @@ void step_physics(Game* game, float dt) {
 
     bool collision = false;
 
-    collision = detect_collision(paddle1, ball, previous_ball_position);
-    if (!collision) collision = detect_collision(paddle2, ball, previous_ball_position);
+    collision = detect_collision(&game->paddles[0], ball, previous_ball_position);
+    if (!collision) collision = detect_collision(&game->paddles[1], ball, previous_ball_position);
 
     if (collision && game->speedup_in == 0.0f) speedup_ball(game);
 

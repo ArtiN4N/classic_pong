@@ -54,18 +54,25 @@ Paddle create_paddle(Player player_number) {
 
 void move_paddle(Paddle* paddle, int direction, float dt) { paddle->position.y += paddle->speed * direction * dt; }
 
+
 void update_paddle(Paddle* paddle) {
+    
     paddle->left = paddle->position.x;
     paddle->right = paddle->position.x + paddle->size.x;
     paddle->top = paddle->position.y;
     paddle->bottom = paddle->position.y + paddle->size.y;
 
+
+    //-------------------------------------------------------------------------------------------
+
+
     if (paddle->top < 0) paddle->position.y = 0;
-    else if (paddle->bottom > SCREEN_HEIGHT) paddle->position.y = SCREEN_HEIGHT - paddle->size.y;
+    else if (paddle->bottom > SCREEN_HEIGHT) paddle->position.y = SCREEN_HEIGHT - paddle->size.y; // Clamps postition onto screen
 }
 
 
 void reset_paddle(Paddle* paddle) { paddle->position.y = (SCREEN_HEIGHT - paddle->size.y) / 2.0f; }
+
 
 void score(Paddle* paddle) { paddle->score++; }
 
@@ -95,6 +102,7 @@ void draw_paddle(Paddle paddle) {
     DrawRectangle(accent_x, accent_one_y, accent_width, accent_height, accent_color);
     DrawRectangle(accent_x, accent_two_y, accent_width, accent_height, accent_color);
 }
+
 
 void draw_paddle_score(Player player_number, int score) {
 
