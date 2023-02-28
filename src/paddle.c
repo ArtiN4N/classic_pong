@@ -82,7 +82,8 @@ void draw_paddle(Paddle paddle) {
 
 void draw_paddle_score(enum player player_number, int score) {
 
-    Color score_color = GREEN; // r = 0, g = 228, b = 48
+    Color score_color = BLUE; // Player one has blue score color.
+    if (player_number == PLAYER_TWO) score_color = PURPLE; // player two has purple score color.
 
     float score_factor = score / 9.0f;
     if (score_factor >= 1.0f) score_factor = 1.0f;
@@ -105,7 +106,10 @@ void draw_paddle_score(enum player player_number, int score) {
 
     const float text_width = MeasureText(text, font_size);
 
-    const float text_x = (SCREEN_WIDTH + 2.0f * text_width) / 4.0f;
+    float fourths = 1.0f;
+    if (player_number == PLAYER_TWO) fourths = 3.0f;
+
+    const float text_x = (SCREEN_WIDTH * fourths + 2.0f * text_width) / 4.0f;
     const float text_y = 50.0f;
 
 
