@@ -3,6 +3,8 @@
 #include "include/raymath.h"
 // <3
 
+#include "include/paddle.h"
+
 #include "stdio.h"
 #include "math.h"
 #include "stdbool.h"
@@ -14,15 +16,6 @@
 
 
 //------ GAME STRUCTS ------
-typedef struct { // Paddles are used by the players to stop the ball from going into their goalzone
-    Vector2 position;
-    Vector2 size;
-
-    float speed;
-
-    int score;
-} Paddle;
-
 typedef struct { // The ball is hit by paddles towards their enemy's goalzone
     Vector2 position;
     Vector2 velocity;
@@ -38,8 +31,7 @@ typedef struct { // Keeps track of all held inputs to compare to relevant values
 } InputState;
 
 typedef struct { // Stores the game state for systems to interpret and update
-    Paddle paddle1;
-    Paddle paddle2;
+    Paddle paddles[2];
 
     Ball ball;
 
@@ -68,37 +60,9 @@ typedef struct { // Stores the game state for systems to interpret and update
 Game initial_game_state() {
     Game game;
 
-    float paddle_width = 40.0f;
-    float paddle_height = 200.0f;
+    game.paddles[0] = create_paddle(PLAYER_ONE);
+    game.paddles[1] = create_paddle(PLAYER_TWO);
 
-    float paddle_y = ((float) SCREEN_HEIGHT - paddle_height) / 2.0f; // Middle of screen y-axis
-
-    float paddle_speed = 300.0f;
-
-    game.paddle1 = (Paddle) {
-        (Vector2) {
-            50.0f, // Left side of screen
-            paddle_y
-        }, 
-        (Vector2) {
-            paddle_width, 
-            paddle_height
-        },
-        paddle_speed,
-        0
-    };
-    game.paddle2 = (Paddle) {
-        (Vector2) {
-            (float) SCREEN_WIDTH - paddle_width - 50.0f, // Right side of screen
-            paddle_y
-        }, 
-        (Vector2) {
-            paddle_width, 
-            paddle_height
-        },
-        paddle_speed,
-        0
-    };
 
     float ball_x = (float) SCREEN_WIDTH / 2.0f; // Middle of screen x-axis
     float ball_y = (float) SCREEN_HEIGHT / 2.0f; // Middle of screen y-axis
@@ -180,17 +144,21 @@ InputState capture_input() {
 
 
 //-------------------------------------------- INPUT HANDLE SYSTEM --------------------------------------------
-void handle_input(Game* game, float dt) {  
+void handle_input(Game* game, float dt) {
+    
     for (int i = 0; i < game->input_state.total_keys; i++) {
         if (!game->winner && !game->paused) {
+            
             // Handles paddle 1 movement
-            if (game->input_state.keys_down[i] == KEY_S) game->paddle1.position.y += game->paddle1.speed * dt;
-            if (game->input_state.keys_down[i] == KEY_W) game->paddle1.position.y -= game->paddle1.speed * dt;
+            if (game->input_state.keys_down[i] == KEY_S) {
+                game->paddles[0].position.y += game->paddles[0].speed * dt;
+            }
+            if (game->input_state.keys_down[i] == KEY_W) game->paddles[0].position.y -= game->paddles[0].speed * dt;
 
             // If there is a second player, allow input to determine paddle 2 movement
             if (!game->single_player) {
-                if (game->input_state.keys_down[i] == KEY_K) game->paddle2.position.y += game->paddle2.speed * dt;
-                if (game->input_state.keys_down[i] == KEY_I) game->paddle2.position.y -= game->paddle2.speed * dt;
+                if (game->input_state.keys_down[i] == KEY_K) game->paddles[1].position.y += game->paddles[1].speed * dt;
+                if (game->input_state.keys_down[i] == KEY_I) game->paddles[1].position.y -= game->paddles[1].speed * dt;
             }
         }
     }
@@ -261,8 +229,8 @@ void reset_on_score(Game* game, bool paddle1_scored) {
     float paddle_y = ((float) SCREEN_HEIGHT - paddle_height) / 2.0f; // Middle of screen y-axis
 
 
-    game->paddle1.position.y = paddle_y;
-    game->paddle2.position.y = paddle_y;
+    game->paddles[0].position.y = paddle_y;
+    game->paddles[1].position.y = paddle_y;
 
     game->speedup_in = 5.0f;
     game->time = 0.0f;
@@ -296,8 +264,8 @@ void step_physics(Game* game, float dt) {
     if (!game->in_reset_animation) game->time += dt;
 
     // NOTE: both paddles use paddle 1's height. If paddles have differing heights, this needs to be updated
-    Paddle* paddle1 = &(game->paddle1);
-    Paddle* paddle2 = &(game->paddle2);
+    Paddle* paddle1 = &(game->paddles[0]);
+    Paddle* paddle2 = &(game->paddles[1]);
     Ball* ball = &(game->ball);
 
     float screen_bottom = (float) SCREEN_HEIGHT; 
@@ -364,16 +332,8 @@ void draw_game(Game* game) {
             DrawRectangle((float) SCREEN_WIDTH / 2.0f - 2.0f, i * marker_length, 4.0f, marker_length, WHITE);
         }
 
-        // Draw the paddles
-        DrawRectangleV(game->paddle1.position, game->paddle1.size, WHITE);
-        DrawRectangleV(game->paddle2.position, game->paddle2.size, WHITE);
-
-        // Draw paddle lines
-        DrawRectangle(game->paddle1.position.x, game->paddle1.position.y + game->paddle1.size.y / 3.0f - 10.0f, game->paddle1.size.x, 20.0f, BLUE);
-        DrawRectangle(game->paddle1.position.x, game->paddle1.position.y + game->paddle1.size.y * 2.0f / 3.0f - 10.0f, game->paddle1.size.x, 20.0f, BLUE);
-
-        DrawRectangle(game->paddle2.position.x, game->paddle2.position.y + game->paddle2.size.y / 3.0f - 10.0f, game->paddle2.size.x, 20.0f, PURPLE);
-        DrawRectangle(game->paddle2.position.x, game->paddle2.position.y + game->paddle2.size.y * 2.0f / 3.0f - 10.0f, game->paddle2.size.x, 20.0f, PURPLE);
+        draw_paddle(game->paddles[0]);
+        draw_paddle(game->paddles[1]);
 
         int ball_opac = 255;
         if (game->reset_animation > 0.0f) {
@@ -383,7 +343,7 @@ void draw_game(Game* game) {
 
         DrawCircleV(game->ball.position, game->ball.radius, (Color) {255, 255, 255, ball_opac}); // Draw the ball
 
-        float score_factor = (float) game->paddle1.score / 9.0f;
+        float score_factor = (float) game->paddles[0].score / 9.0f;
         if (score_factor >= 1.0f) score_factor = 1.0f;
 
         int r_offset = 255 * score_factor;
@@ -391,9 +351,9 @@ void draw_game(Game* game) {
         int b_offset = 207 * score_factor;
         Color paddle1_score_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
 
-        DrawText(TextFormat("%d", game->paddle1.score), (SCREEN_WIDTH / 4) + MeasureText(TextFormat("%d", game->paddle1.score), 60) / 2, 50.0f, 60, paddle1_score_color);
+        DrawText(TextFormat("%d", game->paddles[0].score), (SCREEN_WIDTH / 4) + MeasureText(TextFormat("%d", game->paddles[0].score), 60) / 2, 50.0f, 60, paddle1_score_color);
 
-        score_factor = (float) game->paddle2.score / 9.0f;
+        score_factor = (float) game->paddles[1].score / 9.0f;
         if (score_factor >= 1.0f) score_factor = 1.0f;
 
         r_offset = 255 * score_factor;
@@ -401,7 +361,7 @@ void draw_game(Game* game) {
         b_offset = 207 * score_factor;
         Color paddle2_score_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
 
-        DrawText(TextFormat("%d", game->paddle2.score), (SCREEN_WIDTH * 3 / 4) + MeasureText(TextFormat("%d", game->paddle2.score), 60) / 2, 50.0f, 60, paddle2_score_color);
+        DrawText(TextFormat("%d", game->paddles[1].score), (SCREEN_WIDTH * 3 / 4) + MeasureText(TextFormat("%d", game->paddles[1].score), 60) / 2, 50.0f, 60, paddle2_score_color);
 
         float timer_factor = game->time / 60.0f;
         if (timer_factor >= 1.0f) timer_factor = 1.0f;
@@ -482,13 +442,6 @@ int main(void) {
                 game = initial_game_state();
             }
         }
-
-        //if (IsKeyPressed(KEY_ENTER)) {
-            //game.paused = false;
-            //printf("setting play\n");
-        //}
-
-        
 
         if (!game.paused) {
             game.input_state = capture_input();
