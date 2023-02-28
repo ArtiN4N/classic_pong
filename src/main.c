@@ -223,12 +223,8 @@ void reset_on_score(Game* game, bool paddle1_scored) {
         ball_radius
     };
 
-    float paddle_height = 200.0f;
-    float paddle_y = ((float) SCREEN_HEIGHT - paddle_height) / 2.0f; // Middle of screen y-axis
-
-
-    game->paddles[0].position.y = paddle_y;
-    game->paddles[1].position.y = paddle_y;
+    reset_paddle(&game->paddles[0]);
+    reset_paddle(&game->paddles[1]);
 
     game->speedup_in = 5.0f;
     game->time = 0.0f;
