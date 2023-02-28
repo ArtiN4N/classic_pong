@@ -79,3 +79,7 @@ void draw_paddle(Paddle paddle) {
     DrawRectangle(accent_x, accent_one_y, accent_width, accent_height, accent_color);
     DrawRectangle(accent_x, accent_two_y, accent_width, accent_height, accent_color);
 }
+
+void draw_paddle_score(enum player player_number, int score) {
+    
+}

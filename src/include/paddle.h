@@ -35,4 +35,6 @@ Paddle create_paddle(enum player player_number);
 
 void draw_paddle(Paddle paddle);
 
+void draw_paddle_score(enum player player_number, int score);
+
 #endif
