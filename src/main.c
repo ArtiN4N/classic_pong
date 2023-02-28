@@ -272,11 +272,8 @@ void step_physics(Game* game, float dt) {
     float screen_top = 0.0f;
 
     // Keeping paddles on-screen
-    if (paddle1->position.y < screen_top) paddle1->position.y = screen_top;
-    else if (paddle1->position.y > screen_bottom - paddle1->size.y) paddle1->position.y = screen_bottom - paddle1->size.y;
-    
-    if (paddle2->position.y < screen_top) paddle2->position.y = screen_top;
-    else if (paddle2->position.y > screen_bottom - paddle1->size.y) paddle2->position.y = screen_bottom - paddle1->size.y;
+    update_paddle(&game->paddles[0]);
+    update_paddle(&game->paddles[1]);
 
     // Updates balls position
     Vector2 previous_ball_position = ball->position;
