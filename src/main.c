@@ -143,13 +143,6 @@ void handle_input(Game* game, float dt) {
 }
 //-------------------------------------------------------------------------------------------------------------
 
-void speedup_ball(Game* game) {
-    game->ball.speed *= 1.2;
-    if (game->ball.speed > 3000.0f) game->ball.speed = 3000.0f;
-    game->speedup_in = 5.0f;
-
-}
-
 bool detect_collision(Paddle* paddle, Ball* ball, Vector2 previous_ball_position) {
     Vector2 colliding_paddle = ball->position;
 
@@ -194,20 +187,8 @@ bool detect_collision(Paddle* paddle, Ball* ball, Vector2 previous_ball_position
 }
 
 void reset_on_score(Game* game, bool paddle1_scored) {
-    float ball_x = (float) SCREEN_WIDTH / 2.0f; // Middle of screen x-axis
-    float ball_y = (float) SCREEN_HEIGHT / 2.0f; // Middle of screen y-axis
-    float ball_speed = 425.0f;
-    float ball_radius = 20.0f;
-
-    game->ball = (Ball) {
-        (Vector2) {
-            ball_x, 
-            ball_y
-        },
-        Vector2Normalize((Vector2) {0.0f, 0.0f}), // Velocity starts at 0
-        ball_speed,
-        ball_radius
-    };
+    
+    reset_ball(&game->ball);
 
     reset_paddle(&game->paddles[0]);
     reset_paddle(&game->paddles[1]);
@@ -276,7 +257,10 @@ void step_physics(Game* game, float dt) {
     collision = detect_collision(&game->paddles[0], ball, previous_ball_position);
     if (!collision) collision = detect_collision(&game->paddles[1], ball, previous_ball_position);
 
-    if (collision && game->speedup_in == 0.0f) speedup_ball(game);
+    if (collision && game->speedup_in == 0.0f) {
+        speedup_ball(&game->ball);
+        game->speedup_in = 5.0f;
+    }
 
     if (ball->position.x - ball->radius > SCREEN_WIDTH) {
         score(&game->paddles[0]);
