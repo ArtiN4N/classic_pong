@@ -33,6 +33,8 @@ typedef struct {
 // The only necessary paramter is whether or not it is player one or player two.
 Paddle create_paddle(Player player_number);
 
+void move_paddle(Paddle* paddle, int direction, float dt);
+
 void draw_paddle(Paddle paddle);
 
 void draw_paddle_score(Player player_number, int score);

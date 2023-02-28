@@ -150,15 +150,13 @@ void handle_input(Game* game, float dt) {
         if (!game->winner && !game->paused) {
             
             // Handles paddle 1 movement
-            if (game->input_state.keys_down[i] == KEY_S) {
-                game->paddles[0].position.y += game->paddles[0].speed * dt;
-            }
-            if (game->input_state.keys_down[i] == KEY_W) game->paddles[0].position.y -= game->paddles[0].speed * dt;
+            if (game->input_state.keys_down[i] == KEY_S) move_paddle(&game->paddles[0],  1, dt);
+            if (game->input_state.keys_down[i] == KEY_W) move_paddle(&game->paddles[0], -1, dt);
 
             // If there is a second player, allow input to determine paddle 2 movement
             if (!game->single_player) {
-                if (game->input_state.keys_down[i] == KEY_K) game->paddles[1].position.y += game->paddles[1].speed * dt;
-                if (game->input_state.keys_down[i] == KEY_I) game->paddles[1].position.y -= game->paddles[1].speed * dt;
+                if (game->input_state.keys_down[i] == KEY_K) move_paddle(&game->paddles[1],  1, dt);
+                if (game->input_state.keys_down[i] == KEY_I) move_paddle(&game->paddles[1], -1, dt);
             }
         }
     }

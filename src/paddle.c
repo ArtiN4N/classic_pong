@@ -52,6 +52,8 @@ Paddle create_paddle(Player player_number) {
 }
 
 
+void move_paddle(Paddle* paddle, int direction, float dt) { paddle->position.y += paddle->speed * direction * dt; }
+
 void draw_paddle(Paddle paddle) {
 
     const Color paddle_color = WHITE; // Paddles are white.
