@@ -298,11 +298,11 @@ void step_physics(Game* game, float dt) {
     if (collision && game->speedup_in == 0.0f) speedup_ball(game);
 
     if (ball->position.x - ball->radius > SCREEN_WIDTH) {
-        paddle1->score++;
+        score(&game->paddles[0]);
         reset_on_score(game, true);
     }
     else if (ball->position.x + ball->radius < 0) {
-        paddle2->score++;
+        score(&game->paddles[1]);
         reset_on_score(game, false);
     }
 

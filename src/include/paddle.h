@@ -37,6 +37,8 @@ void move_paddle(Paddle* paddle, int direction, float dt);
 
 void reset_paddle(Paddle* paddle);
 
+void score(Paddle* paddle);
+
 void draw_paddle(Paddle paddle);
 
 void draw_paddle_score(Player player_number, int score);
