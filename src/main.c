@@ -4,6 +4,7 @@
 // <3
 
 #include "include/paddle.h"
+#include "include/ball.h"
 
 #include "stdio.h"
 #include "math.h"
@@ -16,13 +17,6 @@
 
 
 //------ GAME STRUCTS ------
-typedef struct { // The ball is hit by paddles towards their enemy's goalzone
-    Vector2 position;
-    Vector2 velocity;
-
-    float speed;
-    float radius;
-} Ball;
 
 typedef struct { // Keeps track of all held inputs to compare to relevant values
     int total_keys;
@@ -63,21 +57,7 @@ Game initial_game_state() {
     game.paddles[0] = create_paddle(PLAYER_ONE);
     game.paddles[1] = create_paddle(PLAYER_TWO);
 
-
-    float ball_x = (float) SCREEN_WIDTH / 2.0f; // Middle of screen x-axis
-    float ball_y = (float) SCREEN_HEIGHT / 2.0f; // Middle of screen y-axis
-    float ball_speed = 425.0f;
-    float ball_radius = 20.0f;
-
-    game.ball = (Ball) {
-        (Vector2) {
-            ball_x, 
-            ball_y
-        },
-        Vector2Normalize((Vector2) {-1, 0}), // Velocity starts at 0
-        ball_speed,
-        ball_radius
-    };
+    game.ball = create_ball();
 
     game.single_player = false; // Game defaults to single player being false
 
@@ -184,7 +164,7 @@ bool detect_collision(Paddle* paddle, Ball* ball, Vector2 previous_ball_position
 
     if (distance <= ball->radius) {
         
-        bool on_top_or_bottom = previous_ball_position.y + ball->radius < paddle->position.y || previous_ball_position.y - ball->radius > paddle->position.y + paddle->size.y;
+        //bool on_top_or_bottom = previous_ball_position.y + ball->radius < paddle->position.y || previous_ball_position.y - ball->radius > paddle->position.y + paddle->size.y;
         bool between_paddle = previous_ball_position.x + ball->radius > paddle->position.x && previous_ball_position.x - ball->radius < paddle->position.x + paddle->size.x;
         if (between_paddle) {
             if (ball->position.y > paddle->position.y + paddle->size.y / 2.0f) {

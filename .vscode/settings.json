@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "raylib.h": "c",
-        "paddle.h": "c"
+        "paddle.h": "c",
+        "stdio.h": "c",
+        "ball.h": "c",
+        "stdbool.h": "c"
     }
 }
