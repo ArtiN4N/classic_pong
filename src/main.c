@@ -183,11 +183,17 @@ bool detect_collision(Paddle* paddle, Ball* ball, Vector2 previous_ball_position
     float distance = sqrt( (distanceVec.x * distanceVec.x) + (distanceVec.y * distanceVec.y) );
 
     if (distance <= ball->radius) {
+        
         bool on_top_or_bottom = previous_ball_position.y + ball->radius < paddle->position.y || previous_ball_position.y - ball->radius > paddle->position.y + paddle->size.y;
         bool between_paddle = previous_ball_position.x + ball->radius > paddle->position.x && previous_ball_position.x - ball->radius < paddle->position.x + paddle->size.x;
-        if (on_top_or_bottom && between_paddle) {
-            ball->position.y = previous_ball_position.y;
-            ball->velocity.y *= -1;
+        if (between_paddle) {
+            if (ball->position.y > paddle->position.y + paddle->size.y / 2.0f) {
+                ball->position.y = paddle->position.y + paddle->size.y + ball->radius;
+                ball->velocity.y = 1;
+            } else {
+                ball->position.y = paddle->position.y - ball->radius;
+                ball->velocity.y = -1;
+            }
         }
         else if (!between_paddle) {
             ball->position.x = previous_ball_position.x;
@@ -306,7 +312,7 @@ void step_physics(Game* game, float dt) {
         reset_on_score(game, false);
     }
 
-    if (paddle1->score == 10 || paddle2->score == 10) game->winner = true;
+    if (game->paddles[0].score == 10 || game->paddles[1].score == 10) game->winner = true;
 
     
 }
