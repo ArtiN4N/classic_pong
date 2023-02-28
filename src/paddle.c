@@ -6,7 +6,7 @@
 #define SCREEN_HEIGHT 800
 //-----------------------
 
-Paddle create_paddle(enum player player_number) {
+Paddle create_paddle(Player player_number) {
 
     const int width  = 40;
     const int height = 200; // Paddles are 40 x 200 pixels.
@@ -80,7 +80,7 @@ void draw_paddle(Paddle paddle) {
     DrawRectangle(accent_x, accent_two_y, accent_width, accent_height, accent_color);
 }
 
-void draw_paddle_score(enum player player_number, int score) {
+void draw_paddle_score(Player player_number, int score) {
 
     Color score_color = BLUE; // Player one has blue score color.
     if (player_number == PLAYER_TWO) score_color = PURPLE; // player two has purple score color.
