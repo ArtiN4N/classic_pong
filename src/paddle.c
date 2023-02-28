@@ -81,5 +81,36 @@ void draw_paddle(Paddle paddle) {
 }
 
 void draw_paddle_score(enum player player_number, int score) {
-    
+
+    Color score_color = GREEN; // r = 0, g = 228, b = 48
+
+    float score_factor = score / 9.0f;
+    if (score_factor >= 1.0f) score_factor = 1.0f;
+
+    const int inverse_r = 255 - score_color.r;
+    const int inverse_g = 255 - score_color.g;
+    const int inverse_b = 255 - score_color.b;
+
+    score_color.r = 255 - inverse_r * score_factor; 
+    score_color.g = 255 - inverse_g * score_factor; 
+    score_color.b = 255 - inverse_b * score_factor; 
+
+
+    //---------------------------------------------------------------------------------------------------------
+
+
+    const char* text = TextFormat("%d", score);
+
+    const int font_size = 60;
+
+    const float text_width = MeasureText(text, font_size);
+
+    const float text_x = (SCREEN_WIDTH + 2.0f * text_width) / 4.0f;
+    const float text_y = 50.0f;
+
+
+    //---------------------------------------------------------------------------------------------------------
+
+
+    DrawText(text, text_x, text_y, font_size, score_color);
 }

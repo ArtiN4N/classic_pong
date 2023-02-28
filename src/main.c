@@ -343,22 +343,14 @@ void draw_game(Game* game) {
 
         DrawCircleV(game->ball.position, game->ball.radius, (Color) {255, 255, 255, ball_opac}); // Draw the ball
 
-        float score_factor = (float) game->paddles[0].score / 9.0f;
+        draw_paddle_score(game->paddles[0].player_number, game->paddles[0].score);
+
+        float score_factor = (float) game->paddles[1].score / 9.0f;
         if (score_factor >= 1.0f) score_factor = 1.0f;
 
-        int r_offset = 255 * score_factor;
-        int g_offset = 27 * score_factor;
-        int b_offset = 207 * score_factor;
-        Color paddle1_score_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
-
-        DrawText(TextFormat("%d", game->paddles[0].score), (SCREEN_WIDTH / 4) + MeasureText(TextFormat("%d", game->paddles[0].score), 60) / 2, 50.0f, 60, paddle1_score_color);
-
-        score_factor = (float) game->paddles[1].score / 9.0f;
-        if (score_factor >= 1.0f) score_factor = 1.0f;
-
-        r_offset = 255 * score_factor;
-        g_offset = 27 * score_factor;
-        b_offset = 207 * score_factor;
+        float r_offset = 255 * score_factor;
+        float g_offset = 27 * score_factor;
+        float b_offset = 207 * score_factor;
         Color paddle2_score_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
 
         DrawText(TextFormat("%d", game->paddles[1].score), (SCREEN_WIDTH * 3 / 4) + MeasureText(TextFormat("%d", game->paddles[1].score), 60) / 2, 50.0f, 60, paddle2_score_color);
