@@ -16,20 +16,18 @@ Paddle create_paddle(Player player_number) {
     const float speed = 300.0f; // Paddles travel 300 pixels / second.
 
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------
 
 
     Paddle paddle;
 
     int paddle_margin = 50; // Paddles are 50 pixels from the edge of the screen.
-
-    // Player one is on the left side.
-    // Player two is on the right side.
-    float x = paddle_margin; 
-    if (player_number == PLAYER_TWO) x = SCREEN_WIDTH - x - width;
+    
+    float x = paddle_margin; // Player one is on the left side.
+    if (player_number == PLAYER_TWO) x = SCREEN_WIDTH - x - width; // Player two is on the right side.
 
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------
 
 
     paddle.player_number = player_number;
@@ -47,7 +45,7 @@ Paddle create_paddle(Player player_number) {
     paddle.score = 0;
 
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------
 
 
     return paddle;
@@ -59,7 +57,7 @@ void draw_paddle(Paddle paddle) {
     const Color paddle_color = WHITE; // Paddles are white.
 
     Color accent_color = BLUE; // Player one has blue accent colors.
-    if (paddle.player_number == PLAYER_TWO) accent_color = PURPLE; // player two has purple accent colors.
+    if (paddle.player_number == PLAYER_TWO) accent_color = PURPLE; // Player two has purple accent colors.
 
     const int accent_width  = paddle.size.x;
     const int accent_height = 20; // Accents are 20 pixels tall
@@ -71,7 +69,7 @@ void draw_paddle(Paddle paddle) {
     const float accent_two_y = paddle.position.y + third_of_paddle * 2.0f - accent_height / 2.0f; // Paddle has two evenly spaced accents
 
 
-    //---------------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------
 
 
     DrawRectangleV(paddle.position, paddle.size, paddle_color);
@@ -85,19 +83,19 @@ void draw_paddle_score(Player player_number, int score) {
     Color score_color = BLUE; // Player one has blue score color.
     if (player_number == PLAYER_TWO) score_color = PURPLE; // player two has purple score color.
 
-    float score_factor = score / 9.0f;
-    if (score_factor >= 1.0f) score_factor = 1.0f;
+    float score_factor = score / 9.0f; // The closer the score is to 9, the more colorful the text is
+    if (score_factor >= 1.0f) score_factor = 1.0f; // Win screen still shows text, so color at score = 10 is same as score = 9
 
     const int inverse_r = 255 - score_color.r;
     const int inverse_g = 255 - score_color.g;
-    const int inverse_b = 255 - score_color.b;
+    const int inverse_b = 255 - score_color.b; // How far score color is from white
 
     score_color.r = 255 - inverse_r * score_factor; 
     score_color.g = 255 - inverse_g * score_factor; 
-    score_color.b = 255 - inverse_b * score_factor; 
+    score_color.b = 255 - inverse_b * score_factor; // The higher the score, the less white the text is
 
 
-    //---------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
 
 
     const char* text = TextFormat("%d", score);
@@ -106,14 +104,14 @@ void draw_paddle_score(Player player_number, int score) {
 
     const float text_width = MeasureText(text, font_size);
 
-    float fourths = 1.0f;
-    if (player_number == PLAYER_TWO) fourths = 3.0f;
+    float fourths = 1.0f; // Player one score is spaced at one fourth of the screen
+    if (player_number == PLAYER_TWO) fourths = 3.0f; // Player two score is spaced at three fourths of the screen
 
     const float text_x = (SCREEN_WIDTH * fourths + 2.0f * text_width) / 4.0f;
     const float text_y = 50.0f;
 
 
-    //---------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------
 
 
     DrawText(text, text_x, text_y, font_size, score_color);
