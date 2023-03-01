@@ -1,3 +1,5 @@
+#include "stdbool.h"
+
 #ifndef TIMER_H
 #define TIMER_H
 
@@ -10,5 +12,7 @@ typedef struct {
 } Timer;
 
 void reset_timer(Timer* timer);
+
+void step_timer(Timer* timer, float time);
 
 #endif

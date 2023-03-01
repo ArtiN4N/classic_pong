@@ -38,7 +38,7 @@ typedef struct { // Stores the game state for systems to interpret and update
 
     float reset_animation;
 
-    bool paddle1_last_scored;
+    Player paddle_last_scored;
     bool in_reset_animation;
 
     bool winner;
@@ -66,7 +66,7 @@ Game initial_game_state() {
 
     game.reset_animation = 0.0f;
 
-    game.paddle1_last_scored = true;
+    game.paddle_last_scored = PLAYER_ONE;
     game.in_reset_animation = false;
 
     game.winner = false;
@@ -143,70 +143,23 @@ void handle_input(Game* game, float dt) {
 }
 //-------------------------------------------------------------------------------------------------------------
 
-bool detect_collision(Paddle* paddle, Ball* ball, Vector2 previous_ball_position) {
-    Vector2 colliding_paddle = ball->position;
-
-    if (ball->position.x < paddle->position.x) colliding_paddle.x = paddle->position.x; // test left edge
-    else if (ball->position.x > paddle->position.x + paddle->size.x) colliding_paddle.x = paddle->position.x + paddle->size.x; // right edge
-
-    if (ball->position.y < paddle->position.y) colliding_paddle.y = paddle->position.y; // test left edge
-    else if (ball->position.y > paddle->position.y + paddle->size.y) colliding_paddle.y = paddle->position.y + paddle->size.y; // right edge
-
-    Vector2 distanceVec = { ball->position.x - colliding_paddle.x, ball->position.y - colliding_paddle.y };
-    float distance = sqrt( (distanceVec.x * distanceVec.x) + (distanceVec.y * distanceVec.y) );
-
-    if (distance <= ball->radius) {
-        
-        //bool on_top_or_bottom = previous_ball_position.y + ball->radius < paddle->position.y || previous_ball_position.y - ball->radius > paddle->position.y + paddle->size.y;
-        bool between_paddle = previous_ball_position.x + ball->radius > paddle->position.x && previous_ball_position.x - ball->radius < paddle->position.x + paddle->size.x;
-        if (between_paddle) {
-            if (ball->position.y > paddle->position.y + paddle->size.y / 2.0f) {
-                ball->position.y = paddle->position.y + paddle->size.y + ball->radius;
-                ball->velocity.y = 1;
-            } else {
-                ball->position.y = paddle->position.y - ball->radius;
-                ball->velocity.y = -1;
-            }
-        }
-        else if (!between_paddle) {
-            ball->position.x = previous_ball_position.x;
-            if (ball->position.y < paddle->position.y + paddle->size.y * 1.0f / 3.0f) {
-                ball->velocity.x *= -1;
-                ball->velocity.y = -1;
-            } else if (ball->position.y > paddle->position.y + paddle->size.y * 2.0f / 3.0f) {
-                ball->velocity.x *= -1;
-                ball->velocity.y = 1;
-            } else {
-                ball->velocity.x *= -1;
-                ball->velocity.y = 0;
-            }
-        }
-        return true;
-    }
-    return false;
-}
-
-void reset_on_score(Game* game, bool paddle1_scored) {
+void reset_game_on_score(Game* game, Paddle paddle) {
     
     reset_ball(&game->ball);
 
     reset_paddle(&game->paddles[0]);
     reset_paddle(&game->paddles[1]);
 
-    game->speedup_in = 5.0f;
     game->time = 0.0f;
-
     game->reset_animation = 1.0f;
 
-    game->paddle1_last_scored = paddle1_scored;
+    game->paddle_last_scored = paddle.player_number;
 
 }
 
 
 //-------------------------------------------------------------------- STEP PHYSICS SYSTEM --------------------------------------------------------------------
 void step_physics(Game* game, float dt) {
-    if (game->speedup_in > 0.0f) game->speedup_in -= dt;
-    else game->speedup_in = 0.0f;
 
     if (game->reset_animation > 0.0f) {
         game->reset_animation -= dt;
@@ -216,60 +169,30 @@ void step_physics(Game* game, float dt) {
         game->reset_animation = 0.0f;
 
         float direction = -1;
-        if (game->paddle1_last_scored) direction = 1;
+        if (game->paddle_last_scored == PLAYER_ONE) direction = 1;
 
-        game->ball.velocity.x = direction;
+        game->ball.direction.x = direction;
         game->in_reset_animation = false;
     }
 
     if (!game->in_reset_animation) game->time += dt;
 
     // NOTE: both paddles use paddle 1's height. If paddles have differing heights, this needs to be updated
-    Ball* ball = &(game->ball);
-
-    float screen_bottom = (float) SCREEN_HEIGHT; 
-    float screen_top = 0.0f;
-
+    
     // Keeping paddles on-screen
     update_paddle(&game->paddles[0]);
     update_paddle(&game->paddles[1]);
 
-    // Updates balls position
-    Vector2 previous_ball_position = ball->position;
-    Vector2 ball_normal = Vector2Normalize(ball->velocity);
+    //
+    update_ball(&game->ball, game->paddles, dt);
 
-    ball->position.x += ball_normal.x * ball->speed * dt;
-    ball->position.y += ball_normal.y * ball->speed * dt;
+    Paddle* scored = check_score(game->ball, game->paddles);
 
-    //Keeping ball on screen
-    if (ball->position.y - ball->radius < screen_top) {
-        ball->position.y = screen_top + ball->radius;
-        ball->velocity.y *= -1;
-    }
-    
-    if (ball->position.y + ball->radius > screen_bottom) {
-        ball->position.y = screen_bottom - ball->radius;
-        ball->velocity.y *= -1;
+    if (scored != NULL) {
+        score(scored);
+        reset_game_on_score(game, *scored);
     }
 
-    bool collision = false;
-
-    collision = detect_collision(&game->paddles[0], ball, previous_ball_position);
-    if (!collision) collision = detect_collision(&game->paddles[1], ball, previous_ball_position);
-
-    if (collision && game->speedup_in == 0.0f) {
-        speedup_ball(&game->ball);
-        game->speedup_in = 5.0f;
-    }
-
-    if (ball->position.x - ball->radius > SCREEN_WIDTH) {
-        score(&game->paddles[0]);
-        reset_on_score(game, true);
-    }
-    else if (ball->position.x + ball->radius < 0) {
-        score(&game->paddles[1]);
-        reset_on_score(game, false);
-    }
 
     if (game->paddles[0].score == 10 || game->paddles[1].score == 10) game->winner = true;
 
@@ -320,7 +243,7 @@ void draw_game(Game* game) {
             float win_text_x = (SCREEN_WIDTH - MeasureText("Player 1 Wins!!!", 80)) / 2;
             float win_text_y = (SCREEN_HEIGHT - 80.0f) / 2.0f - 200.0f;
             DrawRectangle(win_text_x - 50, win_text_y - 50, MeasureText("Player 1 Wins!!!", 80) + 100, 80 + 100, BLACK);
-            if (game->paddle1_last_scored) DrawText("Player 1 Wins!!!", win_text_x, win_text_y, 80, WHITE);
+            if (game->paddle_last_scored == PLAYER_ONE) DrawText("Player 1 Wins!!!", win_text_x, win_text_y, 80, WHITE);
             else DrawText("Player 2 Wins!!!", win_text_x, win_text_y, 80, WHITE);
 
             float reset_text_x = (SCREEN_WIDTH - MeasureText("Press Escape to Exit", 50)) / 2;
