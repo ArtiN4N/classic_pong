@@ -168,7 +168,6 @@ void handle_input(Game* game, float dt) {
             }
         }
     }
-    //printf("\n");
 }
 //-------------------------------------------------------------------------------------------------------------
 
@@ -189,6 +188,8 @@ void reset_game_on_score(Game* game, Paddle paddle) {
 
 //-------------------------------------------------------------------- STEP PHYSICS SYSTEM --------------------------------------------------------------------
 void step_physics(Game* game, float dt) {
+
+    if (game->screen_event != PLAY) return;
 
     if (game->reset_animation > 0.0f) {
         game->reset_animation -= dt;
@@ -356,14 +357,12 @@ int main(void) {
         float dt = GetFrameTime();
 
         game.input_state = capture_input();
+
         handle_input(&game, dt);
 
-        if (game.screen_event == PLAY) {
-            step_physics(&game, dt);
-        }
+        step_physics(&game, dt);
 
         draw_game(&game);
-
     }
 
     CloseWindow();
