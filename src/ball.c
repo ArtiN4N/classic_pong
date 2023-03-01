@@ -38,10 +38,10 @@ Ball create_ball() {
 
 void speedup_ball(Ball* ball) {
 
-    ball->speed *= 1.2;
+    ball->speed *= 1.2f;
     if (ball->speed > 3000.0f) ball->speed = 3000.0f;
 
-    ball->speedup_timer.elapsed = 0.0;
+    reset_timer(&ball->speedup_timer);
 }
 
 

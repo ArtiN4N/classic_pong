@@ -1,15 +1,9 @@
 #include "raylib.h"
+#include "timer.h"
 
 #ifndef BALL_H
 #define BALL_H
 
-typedef struct {
-    float elapsed;
-    float length;
-    
-    bool paused;
-    bool loop;
-} Timer;
 
 // The ball is hit by paddles towards their enemy's goalzone.
 // When the ball passes a paddle, the opposing paddle scores.
