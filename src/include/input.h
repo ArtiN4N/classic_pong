@@ -6,7 +6,7 @@
 typedef struct { // Keeps track of all held inputs to compare to relevant values
     int total_keys;
     int key_count;
-    int keys_down[8];
+    int keys_down[4];
 } InputState;
 
 InputState initial_input_state();

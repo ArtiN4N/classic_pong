@@ -6,17 +6,13 @@ InputState initial_input_state() {
     InputState input_state;
 
     input_state.key_count = 0;
-    input_state.total_keys = 8; // We care about 8 keys: up and down for paddle 1 and paddle 2, an exit key, a return to menu key, and 2 start game keys
+    input_state.total_keys = 4; // We care about 4 keys: up and down for paddle 1 and paddle 2
 
     // KEY_NULL essentially represents nothing, is used as the default key stored
     input_state.keys_down[0] = KEY_NULL;
     input_state.keys_down[1] = KEY_NULL;
     input_state.keys_down[2] = KEY_NULL;
     input_state.keys_down[3] = KEY_NULL;
-    input_state.keys_down[4] = KEY_NULL;
-    input_state.keys_down[5] = KEY_NULL;
-    input_state.keys_down[6] = KEY_NULL;
-    input_state.keys_down[7] = KEY_NULL;
 
     return input_state;
 }
@@ -40,12 +36,6 @@ InputState capture_input() {
 
     if (IsKeyDown(KEY_K)) add_to_input_state(&input_state, KEY_K); // paddle2 down
     if (IsKeyDown(KEY_I)) add_to_input_state(&input_state, KEY_I); // paddle2 up
-
-    if (IsKeyDown(KEY_ONE)) add_to_input_state(&input_state, KEY_ONE); // singleplayer
-    if (IsKeyDown(KEY_TWO)) add_to_input_state(&input_state, KEY_TWO); // multiplayer
-
-    if (IsKeyDown(KEY_BACKSPACE)) add_to_input_state(&input_state, KEY_BACKSPACE); // exit
-    if (IsKeyPressed(KEY_ESCAPE)) add_to_input_state(&input_state, KEY_ESCAPE); // pause
 
     return input_state;
 }
