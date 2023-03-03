@@ -55,6 +55,29 @@ Paddle create_paddle(Player player_number) {
 void move_paddle(Paddle* paddle, int direction, float dt) { paddle->position.y += paddle->speed * direction * dt; }
 
 
+void cpu_move_paddle(Paddle* paddle, Vector2 ball_position, float ball_radius, float ball_direction, float dt) {
+    float direction = 0;
+
+    if (ball_direction == 1) {
+        if (ball_position.y - 2.0f * ball_radius < paddle->top) direction = -1;
+        else if (ball_position.y + 2.0f * ball_radius > paddle->bottom) direction = 1;
+
+        if (ball_position.x < 3.0f * SCREEN_WIDTH / 4.0f) {
+            if (direction == -1 && paddle->top < 150.0f) direction = 0;
+            else if (direction == 1 && paddle->bottom > SCREEN_HEIGHT - 150.0f) direction = 0;
+        }
+
+    } else {
+        float paddle_middle = paddle->position.y + paddle->size.y / 2.0f;
+        float epsilon = 5.0f;
+        if (paddle_middle < SCREEN_HEIGHT / 2.0f - epsilon) direction = 1;
+        else if (paddle_middle > SCREEN_HEIGHT / 2.0f + epsilon) direction = -1;
+    }
+
+    paddle->position.y += paddle->speed * 2.0f * direction * dt;
+}
+
+
 void update_paddle(Paddle* paddle) {
     
     paddle->left = paddle->position.x;

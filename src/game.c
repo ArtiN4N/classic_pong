@@ -3,6 +3,7 @@
 #include "include/game.h"
 
 #include <stddef.h>
+#include <stdbool.h>
 
 //-- SCREEN DIMENSIONS --
 #define SCREEN_WIDTH 1600
@@ -78,6 +79,10 @@ void handle_input(Game* game, float dt) {
                 if (game->input_state.keys_down[i] == KEY_I) move_paddle(&game->paddles[1], -1, dt);
             }
         }
+    }
+
+    if (game->single_player) {
+        cpu_move_paddle(&game->paddles[1], game->ball.position, game->ball.radius, game->ball.direction.x, dt);
     }
 }
 //-------------------------------------------------------------------------------------------------------------

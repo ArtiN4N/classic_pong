@@ -35,6 +35,8 @@ Paddle create_paddle(Player player_number);
 
 void move_paddle(Paddle* paddle, int direction, float dt);
 
+void cpu_move_paddle(Paddle* paddle, Vector2 ball_position, float ball_radius, float ball_direction, float dt);
+
 void update_paddle(Paddle* paddle);
 
 void reset_paddle(Paddle* paddle);
