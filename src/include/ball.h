@@ -1,12 +1,11 @@
+#ifndef BALL_H
+#define BALL_H
+
 #include "raylib.h"
 #include "timer.h"
 #include "paddle.h"
 
 #include "stdbool.h"
-
-#ifndef BALL_H
-#define BALL_H
-
 
 // The ball is hit by paddles towards their enemy's goalzone.
 // When the ball passes a paddle, the opposing paddle scores.

@@ -1,7 +1,7 @@
-#include "raylib.h"
-
 #ifndef PADDLE_H
 #define PADDLE_H
+
+#include "raylib.h"
 
 typedef enum Player { PLAYER_ONE = 0, PLAYER_TWO } Player;
 

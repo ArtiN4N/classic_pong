@@ -4,6 +4,9 @@
         "paddle.h": "c",
         "stdio.h": "c",
         "ball.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "raymath.h": "c",
+        "game.h": "c",
+        "input.h": "c"
     }
 }
