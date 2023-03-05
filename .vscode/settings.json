@@ -7,6 +7,8 @@
         "stdbool.h": "c",
         "raymath.h": "c",
         "game.h": "c",
-        "input.h": "c"
+        "input.h": "c",
+        "stddef.h": "c",
+        "timer.h": "c"
     }
 }

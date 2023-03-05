@@ -1,5 +1,5 @@
-#include "include/raylib.h"
-#include "include/input.h"
+#include "../include/raylib.h"
+#include "../include/input.h"
 
 //----- INITIAL INPUT STATE SYSTEM -----
 InputState initial_input_state() {

@@ -1,6 +1,6 @@
-#include "include/raylib.h"
+#include "../include/raylib.h"
 
-#include "include/game.h"
+#include "../include/game.h"
 
 #include <stddef.h>
 #include <stdbool.h>

@@ -1,8 +1,8 @@
 // <3 Made with raylib
-#include "include/raylib.h"
+#include "../include/raylib.h"
 // <3
 
-#include "include/game.h"
+#include "../include/game.h"
 
 //-- SCREEN DIMENSIONS --
 #define SCREEN_WIDTH 1600

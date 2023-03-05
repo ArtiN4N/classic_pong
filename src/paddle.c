@@ -1,5 +1,5 @@
-#include "include/raylib.h"
-#include "include/paddle.h"
+#include "../include/raylib.h"
+#include "../include/paddle.h"
 
 //-- SCREEN DIMENSIONS --
 #define SCREEN_WIDTH 1600

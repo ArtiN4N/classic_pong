@@ -1,4 +1,4 @@
-#include "include/timer.h"
+#include "../include/timer.h"
 
 
 void reset_timer(Timer* timer) {
