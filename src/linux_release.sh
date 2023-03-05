@@ -1,3 +1,0 @@
-gcc main.c game.c input.c paddle.c ball.c timer.c -o classic_pong -O1 -Wall -std=c99 -Wno-missing-braces -I include/ -L lib/ -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-
-gcc -o blah main.c game.c input.c paddle.c ball.c timer.c -Wall -std=c99 -D_DEFAULT_SOURCE -Wno-missing-braces -s -O1 -D_DEFAULT_SOURCE -I/usr/local/include -isystem. -isystem/home/artinan/Documents/gameDev/classic_pong/src -isystem/home/artinan/Documents/gameDev/classic_pong/release/include -isystem/home/artinan/Documents/gameDev/classic_pong/src/external -L. -L/usr/local/lib -L/home/artinan/Documents/gameDev/classic_pong/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -DPLATFORM_DESKTOP
