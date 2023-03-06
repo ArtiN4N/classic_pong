@@ -5,6 +5,8 @@
 
 Paddle create_paddle(Player player_number) {
 
+    Paddle paddle;
+
     const int width  = 40;
     const int height = 200; // Paddles are 40 x 200 pixels.
 
@@ -15,8 +17,6 @@ Paddle create_paddle(Player player_number) {
 
     //------------------------------------------------------------
 
-
-    Paddle paddle;
 
     int paddle_margin = 50; // Paddles are 50 pixels from the edge of the screen.
     
