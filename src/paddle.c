@@ -108,7 +108,7 @@ void draw_paddle(Paddle paddle) {
     if (paddle.player_number == PLAYER_TWO) accent_color = PURPLE; // Player two has purple accent colors.
 
     const int accent_width  = paddle.size.x;
-    const int accent_height = 20; // Accents are 20 pixels tall
+    const int accent_height = 4; // Accents are 20 pixels tall
 
     const float accent_x = paddle.position.x;
 

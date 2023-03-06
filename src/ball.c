@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 
+
 Ball create_ball() {
 
     const float x = SCREEN_WIDTH  / 2.0f;
