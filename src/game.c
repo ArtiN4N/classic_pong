@@ -33,7 +33,6 @@ Game initial_game_state() {
 
     game.paddle_last_scored = PLAYER_ONE;
 
-
     game.close = false;
 
     game.screen_event = MENU;
@@ -104,19 +103,26 @@ void reset_game_on_score(Game* game, Paddle paddle) {
     
     reset_ball(&game->ball);
 
+
+    //------------------------------------------------
+
+
     reset_paddle(&game->paddles[0]);
     reset_paddle(&game->paddles[1]);
+
+    game->paddle_last_scored = paddle.player_number;
+
+
+    //------------------------------------------------
+
 
     game->time = 0.0f;
 
     pause_unpause_timer(&game->reset_animation_timer);
     
-    game->paddle_last_scored = paddle.player_number;
-
 }
 
 
-//-------------------------------------------------------------------- STEP PHYSICS SYSTEM --------------------------------------------------------------------
 void step_physics(Game* game, float dt) {
 
     if (game->screen_event != PLAY) return;
@@ -132,49 +138,36 @@ void step_physics(Game* game, float dt) {
         pause_unpause_timer(&game->reset_animation_timer);
     }
 
-    if (game->reset_animation_timer.paused) game->time += dt;
+    if (!game->reset_animation_timer.paused) return;
 
 
-
-    /*if (game->reset_animation > 0.0f) {
-        game->reset_animation -= dt;
-        game->in_reset_animation = true;
-    }
-    else if (game->in_reset_animation) {
-        game->reset_animation = 0.0f;
-
-        float direction = -1;
-        if (game->paddle_last_scored == PLAYER_ONE) direction = 1;
-
-        game->ball.direction.x = direction;
-        game->in_reset_animation = false;
-    }*/
+    //--------------------------------------------------------------------------------
 
 
-    // NOTE: both paddles use paddle 1's height. If paddles have differing heights, this needs to be updated
+    game->time += dt;
     
-    // Keeping paddles on-screen
     update_paddle(&game->paddles[0]);
     update_paddle(&game->paddles[1]);
 
-    //
     update_ball(&game->ball, game->paddles, dt);
 
     Paddle* scored = check_score(game->ball, game->paddles);
 
-    if (scored != NULL) {
-        score(scored);
-        reset_game_on_score(game, *scored);
-    }
+    if (scored == NULL) return;
 
 
-    if (game->paddles[0].score == 10 || game->paddles[1].score == 10) {
+    //--------------------------------------------------------------------------------
+
+
+    score(scored);
+    reset_game_on_score(game, *scored);
+
+
+    if (game->paddles[0].score == 10 || game->paddles[1].score == 10) { // The game ends when someone reaches a score of ten
         game->screen_event = WIN;
-    }
 
-    
+    } 
 }
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 Paddle* check_score(Ball ball, Paddle* paddles) {
@@ -187,27 +180,27 @@ Paddle* check_score(Ball ball, Paddle* paddles) {
 
 }
 
-
-// DRAW GAME SYSTEM
-void draw_play(Game* game) {
-
-    // Draw the halfway marker
+void draw_markers() {
+    
     int markers = 10;
     float marker_length = (float) SCREEN_HEIGHT / 21.0;
+
     for (int i = 1; i < markers * 2 - 1; i += 2) {
         DrawRectangle((float) SCREEN_WIDTH / 2.0f - 2.0f, i * marker_length, 4.0f, marker_length, WHITE);
     }
 
+}
+
+
+// DRAW GAME SYSTEM
+void draw_play(Game* game) {
+
+    draw_markers();
+
     draw_paddle(game->paddles[0]);
     draw_paddle(game->paddles[1]);
 
-    int ball_opac = 255;
-    if (!game->reset_animation_timer.paused) {
-        int opac_frame = (int) (game->reset_animation_timer.elapsed * 10.0f);
-        if (opac_frame % 2 == 0) ball_opac = (int) 255 / 2.0f;
-    } 
-
-    DrawCircleV(game->ball.position, game->ball.radius, (Color) {255, 255, 255, ball_opac}); // Draw the ball
+    draw_ball(game->ball, game->reset_animation_timer.elapsed, game->reset_animation_timer.paused);
 
     draw_paddle_score(game->paddles[0].player_number, game->paddles[0].score);
     draw_paddle_score(game->paddles[1].player_number, game->paddles[1].score);

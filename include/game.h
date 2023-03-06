@@ -50,6 +50,9 @@ void step_physics(Game* game, float dt);
 // Checks if any scoring has happened. Returns pointer to paddle struct if a player has scored, or a NULL pointer if no player has scored.
 Paddle* check_score(Ball ball, Paddle* paddles);
 
+// Draws halfway court markers during play
+void draw_markers();
+
 void draw_play(Game* game);
 
 void draw_win(Game* game);
