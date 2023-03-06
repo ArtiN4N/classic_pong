@@ -56,12 +56,12 @@ void draw_markers();
 // Draws game clock
 void draw_time(float time);
 
-void draw_play(Game* game);
+void draw_play(Game game);
 
-void draw_win(Game* game);
+void draw_win(Game game);
 
 void draw_menu();
 
-void draw_game(Game* game);
+void draw_game(Game game);
 
 #endif

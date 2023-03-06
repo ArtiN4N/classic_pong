@@ -214,42 +214,51 @@ void draw_time(float time) {
     //-----------------------------------------------------------------------------
 
 
+    const char* text = TextFormat("%.1f", time);
     const int font_size = 40;
-    const char* time_text = TextFormat("%.1f", time);
 
-    const float time_x = (SCREEN_WIDTH - MeasureText(time_text, font_size)) / 2.0f;
+    const float time_x = (SCREEN_WIDTH - MeasureText(text, font_size)) / 2.0f;
     const float time_y = SCREEN_HEIGHT - 70.0f;
 
     //-----------------------------------------------------------------------------
 
 
-    DrawText(time_text, time_x, time_y, font_size, time_color);
+    DrawText(text, time_x, time_y, font_size, time_color);
 
 }
 
 
-void draw_play(Game* game) {
+void draw_play(Game game) {
 
     draw_markers();
+    draw_time(game.time);
 
-    draw_paddle(game->paddles[0]);
-    draw_paddle(game->paddles[1]);
 
-    draw_ball(game->ball, game->reset_animation_timer.elapsed, game->reset_animation_timer.paused);
+    //---------------------------------------------------------------------------------------------
 
-    draw_paddle_score(game->paddles[0].player_number, game->paddles[0].score);
-    draw_paddle_score(game->paddles[1].player_number, game->paddles[1].score);
+
+    draw_paddle(game.paddles[0]);
+    draw_paddle(game.paddles[1]);
+
+    draw_ball(game.ball, game.reset_animation_timer.elapsed, game.reset_animation_timer.paused);
+
+
+    //---------------------------------------------------------------------------------------------
+
+
+    draw_paddle_score(game.paddles[0].player_number, game.paddles[0].score);
+    draw_paddle_score(game.paddles[1].player_number, game.paddles[1].score);
     
-    draw_time(game->time);
+    
 
 }
 
-void draw_win(Game* game) {
+void draw_win(Game game) {
 
     float win_text_y = (SCREEN_HEIGHT - 70.0f) / 2.0f - 200.0f;
 
 
-    if (game->paddle_last_scored == PLAYER_ONE) {
+    if (game.paddle_last_scored == PLAYER_ONE) {
         const char* win_text = "Player 1 Wins";
         float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, 70)) / 2;
         DrawText(win_text, win_text_x, win_text_y, 70, BLUE);
@@ -262,8 +271,8 @@ void draw_win(Game* game) {
     float score_text_y = win_text_y + 100.0f;
 
     const char* score_dash = "-";
-    const char* score_player_one = TextFormat("%d", game->paddles[0].score);
-    const char* score_player_two = TextFormat("%d", game->paddles[1].score);
+    const char* score_player_one = TextFormat("%d", game.paddles[0].score);
+    const char* score_player_two = TextFormat("%d", game.paddles[1].score);
 
     float dash_x = (SCREEN_WIDTH - MeasureText(score_dash, 70)) / 2;
     float player_one_x = dash_x - 25.0f - MeasureText(score_player_one, 70);
@@ -312,16 +321,18 @@ void draw_menu() {
     
 }
 
-void draw_game(Game* game) {
+void draw_game(Game game) {
+
     BeginDrawing();
+
         ClearBackground(BLACK);
-        if (game->screen_event == MENU) {
-            draw_menu();
-        } else if (game->screen_event == PLAY) {
-            draw_play(game);
-        } else if (game->screen_event == WIN) {
-            draw_win(game);
-        }
+
+        if (game.screen_event == MENU) draw_menu();
+        else if (game.screen_event == PLAY) draw_play(game);
+        else if (game.screen_event == WIN) draw_win(game);
+
         DrawFPS( 10, 10 );
+
     EndDrawing();
+
 }

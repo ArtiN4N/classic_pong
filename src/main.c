@@ -32,7 +32,7 @@ int main(void) {
 
         step_physics(&game, dt);
 
-        draw_game(&game);
+        draw_game(game);
 
     }
 
