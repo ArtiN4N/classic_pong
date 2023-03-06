@@ -34,6 +34,8 @@ void reset_ball(Ball* ball);
 // Updates kinematics of ball, and checks for collision.
 void update_ball(Ball* ball, Paddle* paddles, float dt);
 
+void draw_ball(Ball ball, float animation_elapsed, bool animation_paused);
+
 // Detects collision between ball and a paddle. Also handles fixing the balls position. Returns a boolean representing if a collision has happened.
 bool detect_collision(Ball* ball, Paddle paddle);
 

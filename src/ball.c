@@ -123,6 +123,23 @@ void update_ball(Ball* ball, Paddle* paddles, float dt) {
 }
 
 
+void draw_ball(Ball ball, float animation_elapsed, bool animation_paused) {
+
+    int ball_opac = 255;
+    if (!animation_paused) {
+        int opac_frame = animation_elapsed * 10.0f;
+        if (opac_frame % 2 == 0) ball_opac = 255 / 2.0f;
+    }
+
+
+    //--------------------------------------------------------------------------
+
+
+    DrawCircleV(ball.position, ball.radius, (Color) {255, 255, 255, ball_opac}); // Draw the ball
+    
+}
+
+
 bool detect_collision(Ball* ball, Paddle paddle) {
 
     // Create vector to store which side of the paddle is colliding with the ball
