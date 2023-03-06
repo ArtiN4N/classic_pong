@@ -1,15 +1,22 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include "raylib.h"
 
 #include "paddle.h"
 #include "ball.h"
 #include "input.h"
 
-#ifndef GAME_H
-#define GAME_H
+//-- SCREEN DIMENSIONS --
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 800
+//-----------------------
 
+// Enum to designate menu, win, and play screens.
 typedef enum ScreenEvent { MENU = 0, PLAY, WIN } ScreenEvent;
 
-typedef struct { // Stores the game state for systems to interpret and update
+// The game state stores all relevant data to how to program can adapt and change.
+typedef struct {
     Paddle paddles[2];
 
     Ball ball;
@@ -34,10 +41,13 @@ typedef struct { // Stores the game state for systems to interpret and update
 
     ScreenEvent screen_event;
 } Game;
-//--------------------------
 
+// Creates a default game state. Returns a Game struct.
 Game initial_game_state();
 
+void handle_input(Game* game, float dt);
+
+// Resets game to a default state on score. Paddles and ball are reset, and a short animation is played.
 void reset_game_on_score(Game* game, Paddle paddle);
 
 void step_physics(Game* game, float dt);
@@ -52,7 +62,5 @@ void draw_win(Game* game);
 void draw_menu();
 
 void draw_game(Game* game);
-
-void handle_input(Game* game, float dt);
 
 #endif
