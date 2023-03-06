@@ -1,7 +1,7 @@
-#include "stdbool.h"
-
 #ifndef TIMER_H
 #define TIMER_H
+
+#include "stdbool.h"
 
 // Timer to keep track of a single event. Can be paused and set to loop.
 typedef struct {
