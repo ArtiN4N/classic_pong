@@ -4,6 +4,9 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <math.h>
+
 
 
 Game initial_game_state() {
@@ -26,6 +29,7 @@ Game initial_game_state() {
     game.single_player = false; // Game defaults to single player being false
 
     game.time = 0.0f;
+    game.draw_dt = 0.0f;
 
     game.reset_animation_timer = create_timer(animation_length, animation_loop);
     pause_unpause_timer(&game.reset_animation_timer);
@@ -145,7 +149,8 @@ void step_physics(Game* game, float dt) {
 
 
     game->time += dt;
-    
+    game->draw_dt = dt;
+
     update_paddle(&game->paddles[0]);
     update_paddle(&game->paddles[1]);
 
@@ -180,6 +185,24 @@ Paddle* check_score(Ball ball, Paddle* paddles) {
 
 }
 
+
+void draw_fps(float dt) {
+
+    const char* text = TextFormat("fps = %.0f", 1.0f / (roundf(dt * 1000) / 1000));
+    const int font_size = 30;
+
+    const float text_x = (SCREEN_WIDTH - MeasureText(text, font_size)) / 2.0f;
+    const float text_y = 70.0f - font_size;
+
+
+    //------------------------------------------------------------------------
+
+
+    DrawText(text, text_x, text_y, font_size, GREEN);
+
+}
+
+
 void draw_markers() {
     
     const int markers = 10;
@@ -189,7 +212,7 @@ void draw_markers() {
     //---------------------------------------------------------------------------------------------------
 
 
-    for (int i = 1; i < markers * 2 - 1; i += 2) {
+    for (int i = 3; i < markers * 2 - 1; i += 2) {
         DrawRectangle((float) SCREEN_WIDTH / 2.0f - 2.0f, i * marker_length, 4.0f, marker_length, WHITE);
 
     }
@@ -217,19 +240,20 @@ void draw_time(float time) {
     const char* text = TextFormat("%.1f", time);
     const int font_size = 40;
 
-    const float time_x = (SCREEN_WIDTH - MeasureText(text, font_size)) / 2.0f;
-    const float time_y = SCREEN_HEIGHT - 70.0f;
+    const float text_x = (SCREEN_WIDTH - MeasureText(text, font_size)) / 2.0f;
+    const float text_y = SCREEN_HEIGHT - 70.0f;
 
     //-----------------------------------------------------------------------------
 
 
-    DrawText(text, time_x, time_y, font_size, time_color);
+    DrawText(text, text_x, text_y, font_size, time_color);
 
 }
 
 
 void draw_play(Game game) {
 
+    draw_fps(game.draw_dt);
     draw_markers();
     draw_time(game.time);
 
@@ -330,8 +354,6 @@ void draw_game(Game game) {
         if (game.screen_event == MENU) draw_menu();
         else if (game.screen_event == PLAY) draw_play(game);
         else if (game.screen_event == WIN) draw_win(game);
-
-        DrawFPS( 10, 10 );
 
     EndDrawing();
 
