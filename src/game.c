@@ -150,6 +150,17 @@ void step_physics(Game* game, float dt) {
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+Paddle* check_score(Ball ball, Paddle* paddles) {
+
+    if (ball.position.x - ball.radius > SCREEN_WIDTH) return &paddles[0]; // If the ball is past the right side of screen, player one scores
+    
+    if (ball.position.x + ball.radius < 0) return &paddles[1]; // If the ball is past the left side of screen, player two scores
+
+    return NULL; // If no one has scored, return null pointer. Important to remember to always handle null case with return value
+
+}
+
+
 // DRAW GAME SYSTEM
 void draw_play(Game* game) {
 
