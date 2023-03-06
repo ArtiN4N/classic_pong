@@ -5,14 +5,18 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-//-- SCREEN DIMENSIONS --
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 800
-//-----------------------
 
-//-------------------- INITIAL GAME STATE SYSTEM --------------------
 Game initial_game_state() {
+
     Game game;
+
+    const float animation_length = 1.0f;
+
+    const bool animation_loop = false;
+
+
+    //--------------------------------------------------------------------------
+
 
     game.paddles[0] = create_paddle(PLAYER_ONE);
     game.paddles[1] = create_paddle(PLAYER_TWO);
@@ -22,40 +26,41 @@ Game initial_game_state() {
     game.single_player = false; // Game defaults to single player being false
 
     game.time = 0.0f;
-    game.speedup_in = 5.0f;
 
-    game.reset_animation = 0.0f;
+    game.reset_animation_timer = create_timer(animation_length, animation_loop);
+    pause_unpause_timer(&game.reset_animation_timer);
+
 
     game.paddle_last_scored = PLAYER_ONE;
-    game.in_reset_animation = false;
 
-    game.winner = false;
 
     game.close = false;
 
-    game.paused = true;
-
     game.screen_event = MENU;
 
+
+    //--------------------------------------------------------------------------
+
+
     return game;
+
 }
-//-------------------------------------------------------------------
 
 
-//-------------------------------------------- INPUT HANDLE SYSTEM --------------------------------------------
 void handle_input(Game* game, float dt) {
-    if (IsKeyDown(KEY_BACKSPACE)) {
+
+    if (IsKeyDown(KEY_BACKSPACE)) { // Pressing backspace exits the game
         game->close = true;
         return;
     }
 
-    if (game->screen_event == WIN && IsKeyDown(KEY_ESCAPE)) { 
+    if (game->screen_event == WIN && IsKeyDown(KEY_ESCAPE)) {  // Escape returns to menu on win screen
         game->screen_event = MENU;
         *game = initial_game_state();
         return;
     }
 
-    if (game->screen_event == MENU) {
+    if (game->screen_event == MENU) { // Keys one and two are used to start the game when on menu screen
         if (IsKeyDown(KEY_ONE)) {
             game->screen_event = PLAY;
             game->single_player = true;
@@ -63,29 +68,36 @@ void handle_input(Game* game, float dt) {
             game->screen_event = PLAY;
             game->single_player = false;
         }
+        return;
     }
+
+
+    //---------------------------------------------------------------------------------------------------------
 
 
     for (int i = 0; i < game->input_state.total_keys; i++) {
         
-        if (game->screen_event == PLAY) {
-            // Handles paddle 1 movement
-            if (game->input_state.keys_down[i] == KEY_S) move_paddle(&game->paddles[0],  1, dt);
-            if (game->input_state.keys_down[i] == KEY_W) move_paddle(&game->paddles[0], -1, dt);
+         // Handles paddle 1 movement
 
-            // If there is a second player, allow input to determine paddle 2 movement
-            if (!game->single_player) {
-                if (game->input_state.keys_down[i] == KEY_K) move_paddle(&game->paddles[1],  1, dt);
-                if (game->input_state.keys_down[i] == KEY_I) move_paddle(&game->paddles[1], -1, dt);
-            }
+        if (game->input_state.keys_down[i] == KEY_S) move_paddle(&game->paddles[0],  1, dt);
+        if (game->input_state.keys_down[i] == KEY_W) move_paddle(&game->paddles[0], -1, dt);
+
+        
+        if (!game->single_player) { // If there is a second player, allow input to determine paddle 2 movement
+            if (game->input_state.keys_down[i] == KEY_K) move_paddle(&game->paddles[1],  1, dt);
+            if (game->input_state.keys_down[i] == KEY_I) move_paddle(&game->paddles[1], -1, dt);
         }
     }
 
+
+    //---------------------------------------------------------------------------------------------------------
+
+
     if (game->single_player) {
         cpu_move_paddle(&game->paddles[1], game->ball.position, game->ball.radius, game->ball.direction.x, dt);
+
     }
 }
-//-------------------------------------------------------------------------------------------------------------
 
 
 void reset_game_on_score(Game* game, Paddle paddle) {
@@ -96,8 +108,9 @@ void reset_game_on_score(Game* game, Paddle paddle) {
     reset_paddle(&game->paddles[1]);
 
     game->time = 0.0f;
-    game->reset_animation = 1.0f;
 
+    pause_unpause_timer(&game->reset_animation_timer);
+    
     game->paddle_last_scored = paddle.player_number;
 
 }
@@ -108,7 +121,22 @@ void step_physics(Game* game, float dt) {
 
     if (game->screen_event != PLAY) return;
 
-    if (game->reset_animation > 0.0f) {
+    step_timer(&game->reset_animation_timer, dt);
+
+    if (game->reset_animation_timer.finished && !game->reset_animation_timer.paused) {
+        float direction = -1;
+        if (game->paddle_last_scored == PLAYER_ONE) direction = 1;
+
+        game->ball.direction.x = direction;
+        reset_timer(&game->reset_animation_timer);
+        pause_unpause_timer(&game->reset_animation_timer);
+    }
+
+    if (game->reset_animation_timer.paused) game->time += dt;
+
+
+
+    /*if (game->reset_animation > 0.0f) {
         game->reset_animation -= dt;
         game->in_reset_animation = true;
     }
@@ -120,9 +148,8 @@ void step_physics(Game* game, float dt) {
 
         game->ball.direction.x = direction;
         game->in_reset_animation = false;
-    }
+    }*/
 
-    if (!game->in_reset_animation) game->time += dt;
 
     // NOTE: both paddles use paddle 1's height. If paddles have differing heights, this needs to be updated
     
@@ -175,8 +202,8 @@ void draw_play(Game* game) {
     draw_paddle(game->paddles[1]);
 
     int ball_opac = 255;
-    if (game->reset_animation > 0.0f) {
-        int opac_frame = (int) (game->reset_animation * 10.0f);
+    if (!game->reset_animation_timer.paused) {
+        int opac_frame = (int) (game->reset_animation_timer.elapsed * 10.0f);
         if (opac_frame % 2 == 0) ball_opac = (int) 255 / 2.0f;
     } 
 
@@ -281,4 +308,3 @@ void draw_game(Game* game) {
         DrawFPS( 10, 10 );
     EndDrawing();
 }
-

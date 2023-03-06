@@ -6,6 +6,7 @@
 #include "paddle.h"
 #include "ball.h"
 #include "input.h"
+#include "timer.h"
 
 //-- SCREEN DIMENSIONS --
 #define SCREEN_WIDTH 1600
@@ -26,18 +27,12 @@ typedef struct {
     bool single_player;
 
     float time;
-    float speedup_in;
 
-    float reset_animation;
+    Timer reset_animation_timer;
 
     Player paddle_last_scored;
-    bool in_reset_animation;
-
-    bool winner;
 
     bool close;
-
-    bool paused;
 
     ScreenEvent screen_event;
 } Game;
