@@ -9,8 +9,8 @@ typedef enum Player { PLAYER_ONE = 0, PLAYER_TWO } Player;
 // When the ball hits a paddle, it bounces off of the paddle depending on where it hit the paddle.
 // When the ball hits the middle of the paddle, it bounces straight off.
 // When the ball hits the top of the paddle, it bounces up.
-// Finally, when the ball hits the bottom of the paddle, it bounces down.
-// Paddles can only move up and down, and are limited by the screen dimensions.
+// When the ball hits the bottom of the paddle, it bounces down.
+// Paddles can move up and down, and are limited by the screen dimensions.
 typedef struct { 
     Player player_number;
 
@@ -28,19 +28,19 @@ typedef struct {
 } Paddle;
 
 
-// Creates a default paddle.
-// Paddles always: are the same size, start at the same y coordinate, start with a score of 0, and have a speed of 300 pixels per second.
-// The only necessary paramter is whether or not it is player one or player two.
+// Creates a default paddle. Returns a paddle struct.
 Paddle create_paddle(Player player_number);
 
 void move_paddle(Paddle* paddle, int direction, float dt);
 
+// CPU AI to stop opponent from scoring.
 void cpu_move_paddle(Paddle* paddle, Vector2 ball_position, float ball_radius, float ball_direction, float dt);
 
 void update_paddle(Paddle* paddle);
 
 void reset_paddle(Paddle* paddle);
 
+// Update a paddle that has scored.
 void score(Paddle* paddle);
 
 void draw_paddle(Paddle paddle);
