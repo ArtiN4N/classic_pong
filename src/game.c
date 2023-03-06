@@ -182,17 +182,52 @@ Paddle* check_score(Ball ball, Paddle* paddles) {
 
 void draw_markers() {
     
-    int markers = 10;
-    float marker_length = (float) SCREEN_HEIGHT / 21.0;
+    const int markers = 10;
+    const float marker_length = SCREEN_HEIGHT / 21.0f;
+
+
+    //---------------------------------------------------------------------------------------------------
+
 
     for (int i = 1; i < markers * 2 - 1; i += 2) {
         DrawRectangle((float) SCREEN_WIDTH / 2.0f - 2.0f, i * marker_length, 4.0f, marker_length, WHITE);
+
     }
+}
+
+
+void draw_time(float time) {
+
+    float timer_factor = time / 60.0f;
+    if (timer_factor >= 1.0f) timer_factor = 1.0f;
+
+
+    //-----------------------------------------------------------------------------
+
+
+    const float r_offset = 25 * timer_factor;
+    const float g_offset = 214 * timer_factor;
+    const float b_offset = 200 * timer_factor;
+    Color time_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
+
+
+    //-----------------------------------------------------------------------------
+
+
+    const int font_size = 40;
+    const char* time_text = TextFormat("%.1f", time);
+
+    const float time_x = (SCREEN_WIDTH - MeasureText(time_text, font_size)) / 2.0f;
+    const float time_y = SCREEN_HEIGHT - 70.0f;
+
+    //-----------------------------------------------------------------------------
+
+
+    DrawText(time_text, time_x, time_y, font_size, time_color);
 
 }
 
 
-// DRAW GAME SYSTEM
 void draw_play(Game* game) {
 
     draw_markers();
@@ -204,19 +239,8 @@ void draw_play(Game* game) {
 
     draw_paddle_score(game->paddles[0].player_number, game->paddles[0].score);
     draw_paddle_score(game->paddles[1].player_number, game->paddles[1].score);
-
-
-    float timer_factor = game->time / 60.0f;
-    if (timer_factor >= 1.0f) timer_factor = 1.0f;
-
-    float r_offset = 25 * timer_factor;
-    float g_offset = 214 * timer_factor;
-    float b_offset = 200 * timer_factor;
-    Color time_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
-
-    DrawText(TextFormat("%.1f", game->time), (SCREEN_WIDTH - MeasureText(TextFormat("%.1f", game->time), 40)) / 2, SCREEN_HEIGHT - 70.0f, 40, time_color);
-
-
+    
+    draw_time(game->time);
 
 }
 

@@ -53,6 +53,9 @@ Paddle* check_score(Ball ball, Paddle* paddles);
 // Draws halfway court markers during play
 void draw_markers();
 
+// Draws game clock
+void draw_time(float time);
+
 void draw_play(Game* game);
 
 void draw_win(Game* game);
