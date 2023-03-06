@@ -3,6 +3,11 @@
 
 #include "raylib.h"
 
+//-- SCREEN DIMENSIONS --
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 800
+//-----------------------
+
 typedef enum Player { PLAYER_ONE = 0, PLAYER_TWO } Player;
 
 // Paddles are controlled by players to interact with the game. 

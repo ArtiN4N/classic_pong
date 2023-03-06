@@ -1,10 +1,7 @@
 #include "../include/raylib.h"
+
 #include "../include/paddle.h"
 
-//-- SCREEN DIMENSIONS --
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 800
-//-----------------------
 
 Paddle create_paddle(Player player_number) {
 
@@ -59,22 +56,31 @@ void cpu_move_paddle(Paddle* paddle, Vector2 ball_position, float ball_radius, f
     float direction = 0;
 
     if (ball_direction == 1) {
-        if (ball_position.y - 2.0f * ball_radius < paddle->top) direction = -1;
+
+        if (ball_position.y - 2.0f * ball_radius < paddle->top) direction = -1; // Chase after ball
         else if (ball_position.y + 2.0f * ball_radius > paddle->bottom) direction = 1;
 
-        if (ball_position.x < 3.0f * SCREEN_WIDTH / 4.0f) {
+        if (ball_position.x < 3.0f * SCREEN_WIDTH / 4.0f) { // If the ball is not past three 3rds of the screen, limit paddle movement
             if (direction == -1 && paddle->top < 150.0f) direction = 0;
             else if (direction == 1 && paddle->bottom > SCREEN_HEIGHT - 150.0f) direction = 0;
         }
 
-    } else {
+    } else { // If the ball is moving away from the paddle, return to center screen
+    
         float paddle_middle = paddle->position.y + paddle->size.y / 2.0f;
-        float epsilon = 5.0f;
+        float epsilon = 5.0f; // Not nessecary to move to exactly the middle. Without an epsilon, paddle could get stuck going back and forth trying to be exactly centered
+
         if (paddle_middle < SCREEN_HEIGHT / 2.0f - epsilon) direction = 1;
         else if (paddle_middle > SCREEN_HEIGHT / 2.0f + epsilon) direction = -1;
+
     }
 
+
+    //----------------------------------------------------------------------------------------
+
+
     paddle->position.y += paddle->speed * 2.0f * direction * dt;
+
 }
 
 
@@ -91,6 +97,7 @@ void update_paddle(Paddle* paddle) {
 
     if (paddle->top < 0) paddle->position.y = 0;
     else if (paddle->bottom > SCREEN_HEIGHT) paddle->position.y = SCREEN_HEIGHT - paddle->size.y; // Clamps postition onto screen
+
 }
 
 
@@ -124,6 +131,7 @@ void draw_paddle(Paddle paddle) {
 
     DrawRectangle(accent_x, accent_one_y, accent_width, accent_height, accent_color);
     DrawRectangle(accent_x, accent_two_y, accent_width, accent_height, accent_color);
+    
 }
 
 
@@ -164,4 +172,5 @@ void draw_paddle_score(Player player_number, int score) {
 
 
     DrawText(text, text_x, text_y, font_size, score_color);
+
 }
