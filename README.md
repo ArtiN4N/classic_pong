@@ -7,9 +7,12 @@ classic_pong is a practice project meant to emulate the classic game, pong, and 
 ## Timeline
 
 started  26/02/2023
+
 finished 27/02/2023
 
+
 v1.0 released 05/03/2023
+
 v1.1 released 07/03/2023
 
 ## Installation
