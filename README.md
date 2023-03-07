@@ -40,7 +40,7 @@ classic_pong is confirmed to work on Debian-based systems.
 
 Download `classic_pong_windows.zip` into your directory of choice. Extract its contents using some kind of UNZIP tool. Id reccomend [7ZIP](https://www.7-zip.org).
 
-Double click `classic_pong_windows.exe` to start the game.
+Double click `classic_pong_windows/classic_pong_windows.exe` to start the game.
 
 <br>
 
