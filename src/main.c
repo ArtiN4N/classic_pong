@@ -41,8 +41,6 @@ int main(void) {
     //------------------------------------------------------
 
 
-    StopSoundMulti();
-
     unload_resources(game);
 
     CloseAudioDevice();

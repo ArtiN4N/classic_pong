@@ -113,14 +113,14 @@ void update_ball(Ball* ball, Paddle* paddles, float dt) {
         ball->position.y = 0 + ball->radius;
         ball->direction.y *= -1;
 
-        PlaySoundMulti(ball->fxHit); // hit sfx
+        PlaySound(ball->fxHit); // hit sfx
     }
     
     if (ball->position.y + ball->radius > SCREEN_HEIGHT) { // Bottom of screen collision
         ball->position.y = SCREEN_HEIGHT - ball->radius;
         ball->direction.y *= -1;
 
-        PlaySoundMulti(ball->fxHit); // hit sfx
+        PlaySound(ball->fxHit); // hit sfx
     }
 
 
@@ -131,7 +131,7 @@ void update_ball(Ball* ball, Paddle* paddles, float dt) {
     if (!collision) collision = detect_collision(ball, paddles[1]);
 
     if (collision) {
-        PlaySoundMulti(ball->fxHit); // hit sfx
+        PlaySound(ball->fxHit); // hit sfx
 
         if (ball->speedup_timer.finished) { // If the timer is over, speed up the ball
             speedup_ball(ball);

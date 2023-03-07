@@ -125,7 +125,7 @@ void handle_input(Game* game, float dt) {
     }
 
     if (game->screen_event == WIN && IsKeyDown(KEY_ESCAPE)) {  // Escape returns to menu on win screen
-        PlaySoundMulti(game->menuSelect); // menu sfx
+        PlaySound(game->menuSelect); // menu sfx
         game->screen_event = MENU;
         *game = initial_game_state();
         return;
@@ -133,11 +133,11 @@ void handle_input(Game* game, float dt) {
 
     if (game->screen_event == MENU) { // Keys one and two are used to start the game when on menu screen
         if (IsKeyDown(KEY_ONE)) {
-            PlaySoundMulti(game->menuSelect); // menu sfx
+            PlaySound(game->menuSelect); // menu sfx
             game->screen_event = PLAY;
             game->single_player = true;
         } else if (IsKeyDown(KEY_TWO)) {
-            PlaySoundMulti(game->menuSelect); // menu sfx
+            PlaySound(game->menuSelect); // menu sfx
             game->screen_event = PLAY;
             game->single_player = false;
         }
@@ -236,13 +236,13 @@ void step_physics(Game* game, float dt) {
 
     score(scored);
 
-    PlaySoundMulti(game->ball.fxScore); // score sfx
+    PlaySound(game->ball.fxScore); // score sfx
 
     reset_game_on_score(game, *scored);
 
 
     if (game->paddles[0].score == 10 || game->paddles[1].score == 10) { // The game ends when someone reaches a score of ten
-        PlaySoundMulti(game->fxWin); // win sfx
+        PlaySound(game->fxWin); // win sfx
         game->screen_event = WIN;
         
     } 
