@@ -365,11 +365,11 @@ void draw_win(Game game) {
     if (game.paddle_last_scored == PLAYER_ONE) {
         const char* win_text = "Player 1 Wins";
         float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, font_size)) / 2.0f;
-        DrawText(win_text, win_text_x, win_text_y, font_size, game.palette[PLAYER1]);
+        DrawText(win_text, win_text_x, win_text_y, font_size, game.palette[PRIMARY]);
     } else {
         const char* win_text = "Player 2 Wins";
         float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, font_size)) / 2.0f;
-        DrawText(win_text, win_text_x, win_text_y, font_size, game.palette[PLAYER2]);        
+        DrawText(win_text, win_text_x, win_text_y, font_size, game.palette[PRIMARY]);        
     }
 
     float score_text_y = win_text_y + 100.0f;
@@ -396,7 +396,7 @@ void draw_win(Game game) {
 
     float reset_text_x = (SCREEN_WIDTH - MeasureText("Press Escape to Return to Menu", 40)) / 2.0f;
     float reset_text_y = (SCREEN_HEIGHT - 40.0f) / 2.0f + 100.0f;
-    DrawText("Press Escape to Return to Menu", reset_text_x, reset_text_y, 40, WHITE);
+    DrawText("Press Escape to Return to Menu", reset_text_x, reset_text_y, 40, game.palette[FOREGROUND]);
 
 }
 
