@@ -107,12 +107,7 @@ void reset_paddle(Paddle* paddle) { paddle->position.y = (SCREEN_HEIGHT - paddle
 void score(Paddle* paddle) { paddle->score++; }
 
 
-void draw_paddle(Paddle paddle) {
-
-    const Color paddle_color = WHITE; // Paddles are white.
-
-    Color accent_color = BLUE; // Player one has blue accent colors.
-    if (paddle.player_number == PLAYER_TWO) accent_color = PURPLE; // Player two has purple accent colors.
+void draw_paddle(Paddle paddle, Color accent_color, Color paddle_color) {
 
     const int accent_width  = paddle.size.x;
     const int accent_height = 4; // Accents are 20 pixels tall
@@ -135,21 +130,20 @@ void draw_paddle(Paddle paddle) {
 }
 
 
-void draw_paddle_score(Player player_number, int score) {
-
-    Color score_color = BLUE; // Player one has blue score color.
-    if (player_number == PLAYER_TWO) score_color = PURPLE; // player two has purple score color.
+void draw_paddle_score(Player player_number, int score, Color score_color, Color start_color) {
 
     float score_factor = score / 9.0f; // The closer the score is to 9, the more colorful the text is
     if (score_factor >= 1.0f) score_factor = 1.0f; // Win screen still shows text, so color at score = 10 is same as score = 9
 
     const int inverse_r = 255 - score_color.r;
     const int inverse_g = 255 - score_color.g;
-    const int inverse_b = 255 - score_color.b; // How far score color is from white
+    const int inverse_b = 255 - score_color.b;
+    const int inverse_a = 255 - score_color.a;
 
-    score_color.r = 255 - inverse_r * score_factor; 
-    score_color.g = 255 - inverse_g * score_factor; 
-    score_color.b = 255 - inverse_b * score_factor; // The higher the score, the less white the text is
+    score_color.r = start_color.r - inverse_r * score_factor; 
+    score_color.g = start_color.g - inverse_g * score_factor; 
+    score_color.b = start_color.b - inverse_b * score_factor;
+    score_color.a = start_color.a - inverse_a * score_factor; // The higher the score, the closer the score text is to player color
 
 
     //-----------------------------------------------------------------------

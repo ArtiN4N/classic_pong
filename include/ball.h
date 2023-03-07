@@ -21,6 +21,9 @@ typedef struct {
     float radius;
 
     Timer speedup_timer;
+
+    Sound fxHit;
+    Sound fxScore;
 } Ball;
 
 // Creates a default ball. Starts in the middle of the screen, with its base speed, directed towards player one. Returns ball struct.
@@ -34,9 +37,12 @@ void reset_ball(Ball* ball);
 // Updates kinematics of ball, and checks for collision.
 void update_ball(Ball* ball, Paddle* paddles, float dt);
 
-void draw_ball(Ball ball, float animation_elapsed, bool animation_paused);
+void draw_ball(Ball ball, float animation_elapsed, bool animation_paused, Color color);
 
 // Detects collision between ball and a paddle. Also handles fixing the balls position. Returns a boolean representing if a collision has happened.
 bool detect_collision(Ball* ball, Paddle paddle);
+
+// Unloads all used resources
+void ball_unload_resources(Ball ball);
 
 #endif

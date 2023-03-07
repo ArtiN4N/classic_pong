@@ -48,8 +48,8 @@ void reset_paddle(Paddle* paddle);
 // Update a paddle that has scored.
 void score(Paddle* paddle);
 
-void draw_paddle(Paddle paddle);
+void draw_paddle(Paddle paddle, Color accent_color, Color paddle_color);
 
-void draw_paddle_score(Player player_number, int score);
+void draw_paddle_score(Player player_number, int score, Color score_color, Color start_color);
 
 #endif

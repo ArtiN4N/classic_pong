@@ -45,6 +45,73 @@ Game initial_game_state() {
     //--------------------------------------------------------------------------
 
 
+    game.menuSelect = LoadSound("src/resources/sfx/menu.wav");
+    game.fxWin = LoadSound("src/resources/sfx/win.wav");
+
+    SetSoundVolume(game.menuSelect, 0.3f);
+    SetSoundVolume(game.fxWin, 0.5f);
+
+
+    //--------------------------------------------------------------------------
+
+    // r, g, b, a
+    game.palette[FOREGROUND] = (Color) {
+        255,
+        236,
+        214,
+        255
+    };
+    
+    game.palette[PLAYER1] = (Color) {
+        208,
+        129,
+        89,
+        255
+    };
+
+    game.palette[PLAYER2] = (Color) {
+        141,
+        105,
+        122,
+        255
+    };
+    
+    game.palette[PRIMARY] = (Color) {
+        255,
+        212,
+        163,
+        255
+    };
+
+    game.palette[SECONDARY] = (Color) {
+        255,
+        170,
+        94,
+        255
+    };
+    
+    game.palette[EXIT] = (Color) {
+        84,
+        78,
+        104,
+        255
+    };
+
+    game.palette[BACKGROUND] = (Color) {
+        13,
+        43,
+        69,
+        255
+    };
+
+    game.palette[BASICBLACK] = BLACK;
+
+    game.palette[BASICWHITE] = WHITE;
+
+
+    //--------------------------------------------------------------------------
+
+
     return game;
 
 }
@@ -58,6 +125,7 @@ void handle_input(Game* game, float dt) {
     }
 
     if (game->screen_event == WIN && IsKeyDown(KEY_ESCAPE)) {  // Escape returns to menu on win screen
+        PlaySoundMulti(game->menuSelect); // menu sfx
         game->screen_event = MENU;
         *game = initial_game_state();
         return;
@@ -65,9 +133,11 @@ void handle_input(Game* game, float dt) {
 
     if (game->screen_event == MENU) { // Keys one and two are used to start the game when on menu screen
         if (IsKeyDown(KEY_ONE)) {
+            PlaySoundMulti(game->menuSelect); // menu sfx
             game->screen_event = PLAY;
             game->single_player = true;
         } else if (IsKeyDown(KEY_TWO)) {
+            PlaySoundMulti(game->menuSelect); // menu sfx
             game->screen_event = PLAY;
             game->single_player = false;
         }
@@ -165,12 +235,16 @@ void step_physics(Game* game, float dt) {
 
 
     score(scored);
+
+    PlaySoundMulti(game->ball.fxScore); // score sfx
+
     reset_game_on_score(game, *scored);
 
 
     if (game->paddles[0].score == 10 || game->paddles[1].score == 10) { // The game ends when someone reaches a score of ten
+        PlaySoundMulti(game->fxWin); // win sfx
         game->screen_event = WIN;
-
+        
     } 
 }
 
@@ -186,7 +260,7 @@ Paddle* check_score(Ball ball, Paddle* paddles) {
 }
 
 
-void draw_fps(float dt) {
+void draw_fps(float dt, Color color) {
 
     const char* text = TextFormat("fps = %.0f", 1.0f / (roundf(dt * 1000) / 1000));
     const int font_size = 30;
@@ -198,12 +272,12 @@ void draw_fps(float dt) {
     //-----------------------------------------------------------------------------
 
 
-    DrawText(text, text_x, text_y, font_size, GREEN);
+    DrawText(text, text_x, text_y, font_size, color);
 
 }
 
 
-void draw_markers() {
+void draw_markers(Color color) {
     
     const int markers = 10;
     const float marker_length = SCREEN_HEIGHT / 21.0f;
@@ -213,13 +287,13 @@ void draw_markers() {
 
 
     for (int i = 3; i < markers * 2 - 1; i += 2) {
-        DrawRectangle((float) SCREEN_WIDTH / 2.0f - 2.0f, i * marker_length, 4.0f, marker_length, WHITE);
+        DrawRectangle((float) SCREEN_WIDTH / 2.0f - 2.0f, i * marker_length, 4.0f, marker_length, color);
 
     }
 }
 
 
-void draw_time(float time) {
+void draw_time(float time, Color start_color, Color end_color) {
 
     float timer_factor = time / 60.0f;
     if (timer_factor >= 1.0f) timer_factor = 1.0f;
@@ -228,10 +302,11 @@ void draw_time(float time) {
     //-----------------------------------------------------------------------------
 
 
-    const float r_offset = 25 * timer_factor;
-    const float g_offset = 214 * timer_factor;
-    const float b_offset = 200 * timer_factor;
-    Color time_color = { 255 - r_offset, 255 - g_offset, 255 - b_offset, 255 };
+    const float r_offset = (255 - end_color.r) * timer_factor;
+    const float g_offset = (255 - end_color.g) * timer_factor;
+    const float b_offset = (255 - end_color.b) * timer_factor;
+    const float a_offset = (255 - end_color.a) * timer_factor;
+    Color time_color = { start_color.r - r_offset, start_color.g - g_offset, start_color.b - b_offset, start_color.a - a_offset };
 
 
     //-----------------------------------------------------------------------------
@@ -253,25 +328,25 @@ void draw_time(float time) {
 
 void draw_play(Game game) {
 
-    draw_fps(game.draw_dt);
-    draw_markers();
-    draw_time(game.time);
+    draw_fps(game.draw_dt, game.palette[PRIMARY]);
+    draw_markers(game.palette[FOREGROUND]);
+    draw_time(game.time, game.palette[FOREGROUND], game.palette[PRIMARY]);
 
 
     //------------------------------------------------------------------------------------------
 
 
-    draw_paddle(game.paddles[0]);
-    draw_paddle(game.paddles[1]);
+    draw_paddle(game.paddles[0], game.palette[PLAYER1], game.palette[FOREGROUND]);
+    draw_paddle(game.paddles[1], game.palette[PLAYER2], game.palette[FOREGROUND]);
 
-    draw_ball(game.ball, game.reset_animation_timer.elapsed, game.reset_animation_timer.paused);
+    draw_ball(game.ball, game.reset_animation_timer.elapsed, game.reset_animation_timer.paused, game.palette[FOREGROUND]);
 
 
     //------------------------------------------------------------------------------------------
 
 
-    draw_paddle_score(game.paddles[0].player_number, game.paddles[0].score);
-    draw_paddle_score(game.paddles[1].player_number, game.paddles[1].score);
+    draw_paddle_score(game.paddles[0].player_number, game.paddles[0].score, game.palette[PLAYER1], game.palette[FOREGROUND]);
+    draw_paddle_score(game.paddles[1].player_number, game.paddles[1].score, game.palette[PLAYER2], game.palette[FOREGROUND]);
     
 }
 
@@ -283,17 +358,17 @@ void draw_win(Game game) {
     if (game.paddle_last_scored == PLAYER_ONE) {
         const char* win_text = "Player 1 Wins";
         float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, font_size)) / 2.0f;
-        DrawText(win_text, win_text_x, win_text_y, font_size, BLUE);
+        DrawText(win_text, win_text_x, win_text_y, font_size, game.palette[PLAYER1]);
     } else {
         const char* win_text = "Player 2 Wins";
         float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, font_size)) / 2.0f;
-        DrawText(win_text, win_text_x, win_text_y, font_size, PURPLE);        
+        DrawText(win_text, win_text_x, win_text_y, font_size, game.palette[PLAYER2]);        
     }
 
     float score_text_y = win_text_y + 100.0f;
 
 
-    //------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
 
 
     const char* score_dash = "-";
@@ -304,12 +379,12 @@ void draw_win(Game game) {
     float player_one_x = dash_x - 25.0f - MeasureText(score_player_one, font_size);
     float player_two_x = dash_x + 25.0f + MeasureText(score_dash, font_size);
 
-    DrawText(score_dash, dash_x, score_text_y, font_size, WHITE);
-    DrawText(score_player_one, player_one_x, score_text_y, font_size, BLUE);
-    DrawText(score_player_two, player_two_x, score_text_y, font_size, PURPLE);
+    DrawText(score_dash, dash_x, score_text_y, font_size, game.palette[FOREGROUND]);
+    DrawText(score_player_one, player_one_x, score_text_y, font_size, game.palette[PLAYER1]);
+    DrawText(score_player_two, player_two_x, score_text_y, font_size, game.palette[PLAYER2]);
 
 
-    //------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
 
 
     float reset_text_x = (SCREEN_WIDTH - MeasureText("Press Escape to Return to Menu", 40)) / 2.0f;
@@ -318,73 +393,73 @@ void draw_win(Game game) {
 
 }
 
-void draw_menu() {
+void draw_menu(Game game) {
 
     int font_size = 80;
     const char* title_text = "classic_pong";
     const float title_text_x = (SCREEN_WIDTH - MeasureText(title_text, font_size)) / 2.0f;
     const float title_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 200.0f;
-    DrawText("classic_pong", title_text_x, title_text_y, font_size, WHITE);
+    DrawText("classic_pong", title_text_x, title_text_y, font_size, game.palette[FOREGROUND]);
 
 
-    //------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
 
     font_size = 30;
     const char* play_text = "Press 1 to play singleplayer";
     float play_text_x = (SCREEN_WIDTH - MeasureText(play_text, font_size)) / 2.0f;
     float play_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 50.0f;
-    DrawText(play_text, play_text_x, play_text_y, font_size, GREEN);
+    DrawText(play_text, play_text_x, play_text_y, font_size, game.palette[PRIMARY]);
 
 
-    //------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
 
     font_size = 20;
     const char* multi_paddle1_text = "Player 1 uses keys w and s";
     float multi_paddle1_text_x = ( SCREEN_WIDTH - MeasureText(multi_paddle1_text, font_size)) / 2.0f;
     float multi_paddle1_text_y = play_text_y + 50.0f;
-    DrawText(multi_paddle1_text, multi_paddle1_text_x, multi_paddle1_text_y, font_size, BLUE);
+    DrawText(multi_paddle1_text, multi_paddle1_text_x, multi_paddle1_text_y, font_size, game.palette[PLAYER1]);
 
     
-    //------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
 
     font_size = 30;
     const char* play2_text = "Press 2 to play multiplayer";
     float play2_text_x = (SCREEN_WIDTH - MeasureText(play2_text, font_size)) / 2.0f;
     float play2_text_y = play_text_y + 100.0f;
-    DrawText(play2_text, play2_text_x, play2_text_y, font_size, GREEN);
+    DrawText(play2_text, play2_text_x, play2_text_y, font_size, game.palette[PRIMARY]);
 
 
-    //------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
 
     font_size = 20;
     const char* paddle1_text = "Player 1 uses keys w and s";
     float paddle1_text_x = (8.0f * SCREEN_WIDTH / 20.0f) - MeasureText(paddle1_text, font_size) / 2.0f;
     float paddle1_text_y = play2_text_y + 50.0f;
-    DrawText(paddle1_text, paddle1_text_x, paddle1_text_y, font_size, BLUE);
+    DrawText(paddle1_text, paddle1_text_x, paddle1_text_y, font_size, game.palette[PLAYER1]);
 
 
-    //------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
 
     font_size = 20;
     const char* paddle2_text = "Player 2 uses keys i and k";
     float paddle2_text_x = (12.0f * SCREEN_WIDTH / 20.0f) - MeasureText(paddle2_text, font_size) / 2.0f;
     float paddle2_text_y = play2_text_y + 50.0f;
-    DrawText(paddle2_text, paddle2_text_x, paddle2_text_y, font_size, PURPLE);
+    DrawText(paddle2_text, paddle2_text_x, paddle2_text_y, font_size, game.palette[PLAYER2]);
 
 
-    //------------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------------------
 
 
     font_size = 30;
     const char* exit_text = "Press BACKSPACE to exit";
     float exit_text_x = (SCREEN_WIDTH - MeasureText(exit_text, font_size)) / 2.0f;
     float exit_text_y = play2_text_y + 200.0f;
-    DrawText(exit_text, exit_text_x, exit_text_y, font_size, RED);
+    DrawText(exit_text, exit_text_x, exit_text_y, font_size, game.palette[SECONDARY]);
     
 }
 
@@ -392,12 +467,26 @@ void draw_game(Game game) {
 
     BeginDrawing();
 
-        ClearBackground(BLACK);
+        ClearBackground(game.palette[BACKGROUND]);
 
-        if (game.screen_event == MENU) draw_menu();
+        if (game.screen_event == MENU) draw_menu(game);
         else if (game.screen_event == PLAY) draw_play(game);
         else if (game.screen_event == WIN) draw_win(game);
 
     EndDrawing();
+
+}
+
+
+void unload_resources(Game game) {
+
+    ball_unload_resources(game.ball);
+
+
+    //-------------------------------
+
+
+    UnloadSound(game.menuSelect);
+    UnloadSound(game.fxWin);
 
 }

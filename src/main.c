@@ -12,8 +12,9 @@ int main(void) {
 
     SetExitKey(KEY_NULL); // Disables exiting with escape key
 
-    Game game = initial_game_state();
+    InitAudioDevice(); // Initialize audio device for sfx
 
+    Game game = initial_game_state();
 
     //------------------------------------------------------
 
@@ -39,6 +40,12 @@ int main(void) {
 
     //------------------------------------------------------
 
+
+    StopSoundMulti();
+
+    unload_resources(game);
+
+    CloseAudioDevice();
 
     CloseWindow();
 

@@ -42,6 +42,16 @@ Ball create_ball() {
     //--------------------------------------------------------------
 
 
+    ball.fxHit = LoadSound("src/resources/sfx/hit.wav");
+    ball.fxScore = LoadSound("src/resources/sfx/score.wav");
+
+    SetSoundVolume(ball.fxHit, 0.5f);
+    SetSoundVolume(ball.fxScore, 0.5f);
+
+
+    //--------------------------------------------------------------
+
+
     return ball;
 
 }
@@ -102,11 +112,15 @@ void update_ball(Ball* ball, Paddle* paddles, float dt) {
     if (ball->position.y - ball->radius < 0) { // Top of screen collision
         ball->position.y = 0 + ball->radius;
         ball->direction.y *= -1;
+
+        PlaySoundMulti(ball->fxHit); // hit sfx
     }
     
     if (ball->position.y + ball->radius > SCREEN_HEIGHT) { // Bottom of screen collision
         ball->position.y = SCREEN_HEIGHT - ball->radius;
         ball->direction.y *= -1;
+
+        PlaySoundMulti(ball->fxHit); // hit sfx
     }
 
 
@@ -116,14 +130,19 @@ void update_ball(Ball* ball, Paddle* paddles, float dt) {
     bool collision = detect_collision(ball, paddles[0]);
     if (!collision) collision = detect_collision(ball, paddles[1]);
 
-    if (collision && ball->speedup_timer.finished) {
-        speedup_ball(ball);
-        reset_timer(&ball->speedup_timer);
+    if (collision) {
+        PlaySoundMulti(ball->fxHit); // hit sfx
+
+        if (ball->speedup_timer.finished) { // If the timer is over, speed up the ball
+            speedup_ball(ball);
+            reset_timer(&ball->speedup_timer);
+
+        }
     }
 }
 
 
-void draw_ball(Ball ball, float animation_elapsed, bool animation_paused) {
+void draw_ball(Ball ball, float animation_elapsed, bool animation_paused, Color color) {
 
     int ball_opac = 255;
     if (!animation_paused) {
@@ -131,11 +150,13 @@ void draw_ball(Ball ball, float animation_elapsed, bool animation_paused) {
         if (opac_frame % 2 == 0) ball_opac = 255 / 2.0f;
     }
 
+    color.a = ball_opac;
+
 
     //--------------------------------------------------------------------------
 
 
-    DrawCircleV(ball.position, ball.radius, (Color) {255, 255, 255, ball_opac}); // Draw the ball
+    DrawCircleV(ball.position, ball.radius, color); // Draw the ball
     
 }
 
@@ -211,5 +232,12 @@ bool detect_collision(Ball* ball, Paddle paddle) {
     }
 
     return true; // Collision occurs
+
+}
+
+void ball_unload_resources(Ball ball) {
+
+    UnloadSound(ball.fxHit);
+    UnloadSound(ball.fxScore);
 
 }

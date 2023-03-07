@@ -16,6 +16,9 @@
 // Enum to designate menu, win, and play screens.
 typedef enum ScreenEvent { MENU = 0, PLAY, WIN } ScreenEvent;
 
+// Enum for color palette colors.
+typedef enum PaletteColors { FOREGROUND = 0, PLAYER1, PLAYER2, PRIMARY, SECONDARY, EXIT, BACKGROUND, BASICBLACK, BASICWHITE } PaletteColors;
+
 // The game state stores all relevant data to how to program can adapt and change.
 typedef struct {
     Paddle paddles[2];
@@ -36,6 +39,11 @@ typedef struct {
     bool close;
 
     ScreenEvent screen_event;
+
+    Sound menuSelect;
+    Sound fxWin;
+
+    Color palette[9];
 } Game;
 
 // Creates a default game state. Returns a Game struct.
@@ -51,20 +59,23 @@ void step_physics(Game* game, float dt);
 // Checks if any scoring has happened. Returns pointer to paddle struct if a player has scored, or a NULL pointer if no player has scored.
 Paddle* check_score(Ball ball, Paddle* paddles);
 
-void draw_fps(float dt);
+void draw_fps(float dt, Color color);
 
 // Draws halfway court markers during play
-void draw_markers();
+void draw_markers(Color color);
 
 // Draws game clock
-void draw_time(float time);
+void draw_time(float time, Color start_color, Color end_color);
 
 void draw_play(Game game);
 
 void draw_win(Game game);
 
-void draw_menu();
+void draw_menu(Game game);
 
 void draw_game(Game game);
+
+// Unloads all allocated resources in game
+void unload_resources(Game game);
 
 #endif
