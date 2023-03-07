@@ -42,8 +42,8 @@ Ball create_ball() {
     //--------------------------------------------------------------
 
 
-    ball.fxHit = LoadSound("src/resources/sfx/hit.wav");
-    ball.fxScore = LoadSound("src/resources/sfx/score.wav");
+    ball.fxHit = LoadSound("resources/sfx/hit.wav");
+    ball.fxScore = LoadSound("resources/sfx/score.wav");
 
     SetSoundVolume(ball.fxHit, 0.5f);
     SetSoundVolume(ball.fxScore, 0.5f);

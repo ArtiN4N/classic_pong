@@ -45,8 +45,8 @@ Game initial_game_state() {
     //--------------------------------------------------------------------------
 
 
-    game.menuSelect = LoadSound("src/resources/sfx/menu.wav");
-    game.fxWin = LoadSound("src/resources/sfx/win.wav");
+    game.menuSelect = LoadSound("resources/sfx/menu.wav");
+    game.fxWin = LoadSound("resources/sfx/win.wav");
 
     SetSoundVolume(game.menuSelect, 0.3f);
     SetSoundVolume(game.fxWin, 0.5f);
