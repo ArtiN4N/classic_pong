@@ -6,18 +6,6 @@ classic_pong is a practice project meant to emulate the classic game, pong, and 
 
 <br>
 
-# Timeline
-
-**Started**  26/02/2023  
-
-**Finished** 27/02/2023  
-<br>
-**v1.0 released** 05/03/2023
-
-**v1.1 released** 07/03/2023
-
-<br>
-
 # Installation
 
 Go to [release v1.1](https://github.com/ArtiN4N/classic_pong/releases/tag/v1.1) and install the zip file for your OS (GNU Linux or Windows).
@@ -47,3 +35,17 @@ Double click `classic_pong_windows/classic_pong_windows.exe` to start the game.
 ## On macOS
 
 There's no official release for macOS systems. Look into [wine](https://www.winehq.org) to run the windows exe on macOS.
+
+
+
+<br>
+
+# Timeline
+
+**Started**  26/02/2023  
+
+**Finished** 27/02/2023  
+<br>
+**v1.0 released** 05/03/2023
+
+**v1.1 released** 07/03/2023
