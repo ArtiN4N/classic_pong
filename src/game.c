@@ -195,7 +195,7 @@ void draw_fps(float dt) {
     const float text_y = 70.0f - font_size;
 
 
-    //------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
 
 
     DrawText(text, text_x, text_y, font_size, GREEN);
@@ -258,7 +258,7 @@ void draw_play(Game game) {
     draw_time(game.time);
 
 
-    //---------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
 
 
     draw_paddle(game.paddles[0]);
@@ -267,81 +267,124 @@ void draw_play(Game game) {
     draw_ball(game.ball, game.reset_animation_timer.elapsed, game.reset_animation_timer.paused);
 
 
-    //---------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
 
 
     draw_paddle_score(game.paddles[0].player_number, game.paddles[0].score);
     draw_paddle_score(game.paddles[1].player_number, game.paddles[1].score);
     
-    
-
 }
 
 void draw_win(Game game) {
 
-    float win_text_y = (SCREEN_HEIGHT - 70.0f) / 2.0f - 200.0f;
-
+    int font_size = 70;
+    float win_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 200.0f;
 
     if (game.paddle_last_scored == PLAYER_ONE) {
         const char* win_text = "Player 1 Wins";
-        float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, 70)) / 2;
-        DrawText(win_text, win_text_x, win_text_y, 70, BLUE);
+        float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, font_size)) / 2.0f;
+        DrawText(win_text, win_text_x, win_text_y, font_size, BLUE);
     } else {
         const char* win_text = "Player 2 Wins";
-        float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, 70)) / 2;
-        DrawText(win_text, win_text_x, win_text_y, 70, PURPLE);        
+        float win_text_x = (SCREEN_WIDTH - MeasureText(win_text, font_size)) / 2.0f;
+        DrawText(win_text, win_text_x, win_text_y, font_size, PURPLE);        
     }
 
     float score_text_y = win_text_y + 100.0f;
+
+
+    //------------------------------------------------------------------------------------------
+
 
     const char* score_dash = "-";
     const char* score_player_one = TextFormat("%d", game.paddles[0].score);
     const char* score_player_two = TextFormat("%d", game.paddles[1].score);
 
-    float dash_x = (SCREEN_WIDTH - MeasureText(score_dash, 70)) / 2;
-    float player_one_x = dash_x - 25.0f - MeasureText(score_player_one, 70);
-    float player_two_x = dash_x + 25.0f + MeasureText(score_dash, 70);
+    float dash_x = (SCREEN_WIDTH - MeasureText(score_dash, font_size)) / 2.0f;
+    float player_one_x = dash_x - 25.0f - MeasureText(score_player_one, font_size);
+    float player_two_x = dash_x + 25.0f + MeasureText(score_dash, font_size);
 
-    DrawText(score_dash, dash_x, score_text_y, 70, WHITE);
-    DrawText(score_player_one, player_one_x, score_text_y, 70, BLUE);
-    DrawText(score_player_two, player_two_x, score_text_y, 70, PURPLE);
+    DrawText(score_dash, dash_x, score_text_y, font_size, WHITE);
+    DrawText(score_player_one, player_one_x, score_text_y, font_size, BLUE);
+    DrawText(score_player_two, player_two_x, score_text_y, font_size, PURPLE);
 
-    float reset_text_x = (SCREEN_WIDTH - MeasureText("Press Escape to Return to Menu", 40)) / 2;
+
+    //------------------------------------------------------------------------------------------
+
+
+    float reset_text_x = (SCREEN_WIDTH - MeasureText("Press Escape to Return to Menu", 40)) / 2.0f;
     float reset_text_y = (SCREEN_HEIGHT - 40.0f) / 2.0f + 100.0f;
     DrawText("Press Escape to Return to Menu", reset_text_x, reset_text_y, 40, WHITE);
 
 }
 
 void draw_menu() {
-    float title_text_x = (SCREEN_WIDTH - MeasureText("classic_pong", 80)) / 2;
-    float title_text_y = (SCREEN_HEIGHT - 80.0f) / 2.0f - 200.0f;
-    DrawText("classic_pong", title_text_x, title_text_y, 80, WHITE);
 
-    float play_text_x = (SCREEN_WIDTH - MeasureText("Press 1 to play singleplayer", 30)) / 2;
-    float play_text_y = (SCREEN_HEIGHT - 30.0f) / 2.0f - 50.0f;
-    DrawText("Press 1 to play singleplayer", play_text_x, play_text_y, 30, GREEN);
+    int font_size = 80;
+    const char* title_text = "classic_pong";
+    const float title_text_x = (SCREEN_WIDTH - MeasureText(title_text, font_size)) / 2.0f;
+    const float title_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 200.0f;
+    DrawText("classic_pong", title_text_x, title_text_y, font_size, WHITE);
 
-    float multi_paddle1_text_x = ( SCREEN_WIDTH - MeasureText("Player 1 uses keys w and s", 20)) / 2.0f;
+
+    //------------------------------------------------------------------------------------------
+
+
+    font_size = 30;
+    const char* play_text = "Press 1 to play singleplayer";
+    float play_text_x = (SCREEN_WIDTH - MeasureText(play_text, font_size)) / 2.0f;
+    float play_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 50.0f;
+    DrawText(play_text, play_text_x, play_text_y, font_size, GREEN);
+
+
+    //------------------------------------------------------------------------------------------
+
+
+    font_size = 20;
+    const char* multi_paddle1_text = "Player 1 uses keys w and s";
+    float multi_paddle1_text_x = ( SCREEN_WIDTH - MeasureText(multi_paddle1_text, font_size)) / 2.0f;
     float multi_paddle1_text_y = play_text_y + 50.0f;
-    DrawText("Player 1 uses keys w and s", multi_paddle1_text_x, multi_paddle1_text_y, 20, BLUE);
+    DrawText(multi_paddle1_text, multi_paddle1_text_x, multi_paddle1_text_y, font_size, BLUE);
 
     
+    //------------------------------------------------------------------------------------------
 
-    float play2_text_x = (SCREEN_WIDTH - MeasureText("Press 2 to play multiplayer", 30)) / 2;
+
+    font_size = 30;
+    const char* play2_text = "Press 2 to play multiplayer";
+    float play2_text_x = (SCREEN_WIDTH - MeasureText(play2_text, font_size)) / 2.0f;
     float play2_text_y = play_text_y + 100.0f;
-    DrawText("Press 2 to play multiplayer", play2_text_x, play2_text_y, 30, GREEN);
+    DrawText(play2_text, play2_text_x, play2_text_y, font_size, GREEN);
 
-    float paddle1_text_x = (8.0f * SCREEN_WIDTH / 20.0f) - MeasureText("Player 1 uses keys w and s", 20) / 2.0f;
+
+    //------------------------------------------------------------------------------------------
+
+
+    font_size = 20;
+    const char* paddle1_text = "Player 1 uses keys w and s";
+    float paddle1_text_x = (8.0f * SCREEN_WIDTH / 20.0f) - MeasureText(paddle1_text, font_size) / 2.0f;
     float paddle1_text_y = play2_text_y + 50.0f;
-    DrawText("Player 1 uses keys w and s", paddle1_text_x, paddle1_text_y, 20, BLUE);
+    DrawText(paddle1_text, paddle1_text_x, paddle1_text_y, font_size, BLUE);
 
-    float paddle2_text_x = (12.0f * SCREEN_WIDTH / 20.0f) - MeasureText("Player 2 uses keys i and k", 20) / 2.0f;
+
+    //------------------------------------------------------------------------------------------
+
+
+    font_size = 20;
+    const char* paddle2_text = "Player 2 uses keys i and k";
+    float paddle2_text_x = (12.0f * SCREEN_WIDTH / 20.0f) - MeasureText(paddle2_text, font_size) / 2.0f;
     float paddle2_text_y = play2_text_y + 50.0f;
-    DrawText("Player 2 uses keys i and k", paddle2_text_x, paddle2_text_y, 20, PURPLE);
+    DrawText(paddle2_text, paddle2_text_x, paddle2_text_y, font_size, PURPLE);
 
-    float exit_text_x = (SCREEN_WIDTH - MeasureText("Press BACKSPACE to exit", 30)) / 2;
+
+    //------------------------------------------------------------------------------------------
+
+
+    font_size = 30;
+    const char* exit_text = "Press BACKSPACE to exit";
+    float exit_text_x = (SCREEN_WIDTH - MeasureText(exit_text, font_size)) / 2.0f;
     float exit_text_y = play2_text_y + 200.0f;
-    DrawText("Press BACKSPACE to exit", exit_text_x, exit_text_y, 30, RED);
+    DrawText(exit_text, exit_text_x, exit_text_y, font_size, RED);
     
 }
 
