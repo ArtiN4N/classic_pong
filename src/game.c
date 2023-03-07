@@ -97,6 +97,13 @@ Game initial_game_state() {
         255
     };
 
+    game.palette[BACKGROUNDACCENT] = (Color) {
+        32,
+        60,
+        86,
+        255
+    };
+
     game.palette[BACKGROUND] = (Color) {
         13,
         43,
@@ -398,12 +405,33 @@ void draw_menu(Game game) {
     int font_size = 80;
     const char* title_text = "classic_pong";
     const float title_text_x = (SCREEN_WIDTH - MeasureText(title_text, font_size)) / 2.0f;
-    const float title_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 200.0f;
-    DrawText("classic_pong", title_text_x, title_text_y, font_size, game.palette[FOREGROUND]);
+    const float title_text_y = ((SCREEN_HEIGHT - font_size) / 2.0f) - 250.0f;
+    DrawText(title_text, title_text_x, title_text_y, font_size, game.palette[FOREGROUND]);
 
 
     //--------------------------------------------------------------------------------------------------
 
+
+    const float author_text_y = title_text_y + font_size + 20;
+    font_size = 20;
+    const char* author_text = "Made by ArtiN4N";
+    const float author_text_x = (SCREEN_WIDTH - MeasureText(author_text, font_size)) / 2.0f;
+    
+    DrawText(author_text, author_text_x, author_text_y, font_size, game.palette[FOREGROUND]);
+
+
+    //--------------------------------------------------------------------------------------------------
+
+
+    const float start_rectangle_w = 700;
+    const float start_rectangle_h = 250;
+    const float start_rectangle_x = (SCREEN_WIDTH - start_rectangle_w) / 2.0f;
+    const float start_rectangle_y = (SCREEN_HEIGHT - start_rectangle_h) / 2.0f + 20.0f;
+    
+    DrawRectangle(start_rectangle_x, start_rectangle_y, start_rectangle_w, start_rectangle_h, game.palette[BACKGROUNDACCENT]);
+
+
+    //--------------------------------------------------------------------------------------------------
 
     font_size = 30;
     const char* play_text = "Press 1 to play singleplayer";

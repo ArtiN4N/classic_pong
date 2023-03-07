@@ -17,7 +17,7 @@
 typedef enum ScreenEvent { MENU = 0, PLAY, WIN } ScreenEvent;
 
 // Enum for color palette colors.
-typedef enum PaletteColors { FOREGROUND = 0, PLAYER1, PLAYER2, PRIMARY, SECONDARY, EXIT, BACKGROUND, BASICBLACK, BASICWHITE } PaletteColors;
+typedef enum PaletteColors { FOREGROUND = 0, PLAYER1, PLAYER2, PRIMARY, SECONDARY, EXIT, BACKGROUNDACCENT, BACKGROUND, BASICBLACK, BASICWHITE } PaletteColors;
 
 // The game state stores all relevant data to how to program can adapt and change.
 typedef struct {
@@ -43,7 +43,7 @@ typedef struct {
     Sound menuSelect;
     Sound fxWin;
 
-    Color palette[9];
+    Color palette[10];
 } Game;
 
 // Creates a default game state. Returns a Game struct.
